@@ -2,12 +2,13 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, key, record, items;
+    var score, key, record, items, MAX;
     score = 0;
     key = '';
     record = '';
     $('#proceed').hide();
     items = window.dodoData;
+    MAX = 10;
     $('#skip').click(function(){
       return refresh();
     });
@@ -20,14 +21,13 @@
         url: "https://moedict.tw/dodo/log/?log=" + row
       });
       record += row;
-      $('#progress-text').text(score + " / 5");
-      $('#progress-bar').css('width', score / 5 * 100 + "%");
-      if (score === 5) {
-        alert('試玩結束！');
-        alert(record);
+      $('#progress-text').text(score + " / " + MAX);
+      $('#progress-bar').css('width', score / MAX * 100 + "%");
+      if (score >= MAX) {
+        $('#again-info').text("試玩結束，感謝您的參與！已經送出以下紀錄：\n\n" + record);
         $('.choice').off('click');
-        $('#next').fadeOut('fast');
-        $('#skip').fadeOut('fast');
+        $('#main').fadeOut();
+        $('#again').fadeIn();
         return;
       }
       return refresh();

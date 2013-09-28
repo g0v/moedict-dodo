@@ -18,7 +18,12 @@ body { background: #eee }
 <span id="progress-text"></span>
 </div>
 </div>
-<div class="ui" style="padding: 20px 5px">
+<div id="again" class="ui message successful" style="padding: 20px 5px; display: none"><center>
+    <pre id="again-info"></pre>
+    <br>
+    <a id="again-action" class="ui blue button massive" onclick="window.location = document.URL">再玩一次</a>
+</center></div>
+<div id="main" class="ui" style="padding: 20px 5px">
 <div class="ui message blue attached">
 <h2 class="ui right floated header">
 <a id="skip" class="ui icon button black"><i class="clockwise basic icon"></i> 跳過</a>
