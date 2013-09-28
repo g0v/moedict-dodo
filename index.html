@@ -1,47 +1,56 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-
-    <title>moedict-dodo by g0v</title>
-  </head>
-
-  <body>
-
-    <header>
-      <div class="container">
-        <h1>moedict-dodo</h1>
-        <h2>萌典啄木鳥</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/g0v/moedict-dodo/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/g0v/moedict-dodo/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/g0v/moedict-dodo" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
-
-    <div class="container">
-      <section id="main_content">
-        <p>Whee!</p>
-      </section>
-    </div>
-
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-38832714-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-  </body>
-</html>
+<html><head><meta charset='utf-8'><title>萌典啄木鳥</title>
+<link rel="stylesheet" type="text/css" class="ui" href="./css/semantic.min.css">
+<script src="./javascript/jquery-1.9.1.min.js"></script>
+<script src="./javascript/semantic.min.js"></script>
+<script src="main.js"></script>
+<style>
+b { color: black; outline: 1px solid red }
+body { background: #eee }
+</style>
+</head>
+<body>
+<div class="ui black progress large" style="background: black; color: white">
+<div id="progress-bar" class="bar" style="width:0%">
+<i class="heart basic icon"></i>
+<span id="progress-text"></span>
+</div>
+</div>
+<div class="ui" style="padding: 20px 5px">
+<div class="ui message blue attached">
+<h2 class="ui right floated header">
+<a id="skip" class="ui icon button black"><i class="clockwise basic icon"></i> 跳過</a>
+</h2>
+<div id="book" class="header">
+三國演義．第十八回
+</div>
+<i class="basic icon check"></i>請選擇<strong>正確</strong>的例句。
+</div>
+<form class="ui form fluid segment attached bottom">
+<ol class="ui list">
+<li class="ui item buttons">
+  <a id="x" class="choice ui massive button">「<b>紹</b>聽讒惑亂，公浸潤不行，此明勝也。」</a>
+  <a class="do-search x ui icon massive button"><i class="search icon"></i></a>
+</li>
+<li class="ui item buttons">
+  <a id="y" class="choice ui massive button">「<b>詔</b>聽讒惑亂，公浸潤不行，此明勝也。」</a>
+  <a class="do-search y ui icon massive button"><i class="search icon"></i></a>
+</li>
+<li class="ui item buttons">
+  <a id="z" class="choice ui massive button">兩句都對</a>
+  <!-- <a class="do-search z ui icon massive button"><i class="search
+          icon"></i></a> -->
+</li>
+</ol>
+<div id="proceed" class="two fields">
+  <div class="field">
+    <label><i class="icon basic help"></i>我這樣選的理由（可留白）：</label>
+    <input id="reason" placeholder="" class="ui input" type="text">
+  </div>
+  <div class="field">
+    <a id="next" class="ui blue submit button massive"><i class="icon basic check"></i>確定</a>
+  </div>
+</div>
+</form>
+</div>
+</body></html>
