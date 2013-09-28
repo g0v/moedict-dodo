@@ -2,19 +2,29 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, items;
+    var score, items, key, record;
     score = 0;
     items = data();
+    key = '';
+    record = '';
     $('#proceed').hide();
     $('#skip').click(function(){
       return refresh();
     });
     $('#next').click(function(){
+      var row;
       score++;
+      row = key + "," + $('.choice.green').attr('id') + "," + $('#reason').val().replace(/[\n,]/g, '，') + "\n";
+      $.ajax({
+        dataType: 'jsonp',
+        url: "http://direct.moedict.tw:8080/?log=" + row
+      });
+      record += row;
       $('#progress-text').text(score + " / 5");
       $('#progress-bar').css('width', score / 5 * 100 + "%");
       if (score === 5) {
         alert('試玩結束！');
+        alert(record);
         $('.choice').off('click');
         $('#next').fadeOut('fast');
         $('#skip').fadeOut('fast');
@@ -26,6 +36,7 @@
     function refresh(){
       var ref$, book, xKey, x, yKey, y;
       ref$ = split$.call(items[Math.floor(Math.random() * items.length)], '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4];
+      key = xKey + "," + yKey;
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
       $('#y').html(y.replace(/`/g, '<b>').replace(/~/g, '</b>'));
