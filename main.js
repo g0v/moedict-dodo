@@ -70,13 +70,11 @@
       $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
       $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
       $('#reason').val('');
-      $('#keys').hide();
       $('#proceed').fadeOut('fast');
       $('.choice').removeClass('green');
       return $('.choice').click(function(){
         $('.choice').removeClass('green');
         $(this).addClass('green');
-        $('#keys').show();
         return $('#proceed').fadeIn('fast', function(){
           return $('#reason').focus();
         });

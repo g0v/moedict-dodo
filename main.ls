@@ -54,11 +54,11 @@ function refresh
 # $ \.do-search.z .attr \href "https://www.google.com.tw/\#q=#{ x.replace(/[`~「」]/g '') } #{ y.replace(/[`~「」]/g '') }"
 
   $ \#reason .val ''
-  $ \#keys .hide!
+  #$ \#keys .hide!
   $ \#proceed .fadeOut \fast
   $ \.choice .removeClass \green
   $ \.choice .click ->
     $ \.choice .removeClass \green
     $(@).addClass \green
-    $ \#keys .show!
+    #$ \#keys .show!
     $ \#proceed .fadeIn \fast -> $ \#reason .focus!
