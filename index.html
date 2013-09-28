@@ -10,7 +10,7 @@
 <script src="./javascript/semantic.min.js"></script>
 <script src="main.js"></script>
 <style>
-b { color: black; outline: 1px solid red }
+b { color: black; outline: 1px solid red; font-weight: normal }
 body { background: #eee }
 #book { color: black !important }
 #info { top: 12px; right: 12px; position: absolute; color: #ddd }
@@ -18,6 +18,12 @@ body { background: #eee }
 #info a:hover, #x-key:hover, #y-key:hover { text-decoration: underline }
 #x-key, #y-key { color: #555; text-decoration: none }
 form { background: url("logo.jpg") right top no-repeat }
+@font-face {
+font-family: "MOEDICT";
+src: url('https://www.moedict.tw/fonts/MOEDICT.eot');
+src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('https://www.moedict.tw/fonts/MOEDICT.woff') format('woff'), url('https://www.moedict.tw/fonts/MOEDICT.otf') format('opentype'), url('https://www.moedict.tw/fonts/MOEDICT.ttf') format('truetype');
+}
+.choice { font-family: "MOEDICT", "Lantinghei TC", "黑體-繁", "微軟正黑體", "儷黑 Pro", "蘋果儷中黑", "Adobe 繁黑體 Std", "cwTex 明體", "Adobe 明體 Std", "PMingLiU", "MingLiU", sans-serif, "HanaMinA", "HanaMinB", "HAN NOM A", "HAN NOM B"; font-weight: normal !important; }
 </style>
 </head>
 <body>
