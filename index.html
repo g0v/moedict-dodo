@@ -45,7 +45,7 @@ form { background: url("logo.jpg") right top no-repeat }
 </div>
 <i class="basic icon check"></i>請選擇<strong>正確</strong>的例句。
 </div>
-<form class="ui form fluid segment attached ">
+<form class="ui form fluid segment attached " onsubmit="$('#next').trigger('click'); return false">
 <ol class="ui list">
 <li class="ui item buttons">
   <a id="x" class="choice ui massive button">載入中，請稍候...</a>
