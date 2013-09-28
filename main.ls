@@ -12,7 +12,7 @@ $ \#skip .click -> refresh!
 $ \#next .click ->
   score++
   row = "#key,#{ $ \.choice.green .attr \id },#{ $ \#reason .val! .replace(/[\n,]/g \，) }\n"
-  $.ajax({ dataType: 'jsonp', url: "https://moedict.tw/dodo/log/?log=#row" })
+  $.ajax({ dataType: 'jsonp', url: "https://www.moedict.tw/dodo/log/?log=#row" })
   record += row
   $ \#progress-text .text "#score / #MAX"
   $ \#progress-bar .css \width "#{ score / MAX * 100 }%"
