@@ -2,7 +2,7 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, key, record, items, MAX;
+    var score, key, record, items, MAX, LoadedScripts;
     score = 0;
     key = '';
     record = '';
@@ -32,7 +32,22 @@
       }
       return refresh();
     });
-    $.getScript('data.js', function(){
+    LoadedScripts = {};
+    function getScript(src, cb){
+      if (LoadedScripts[src]) {
+        return cb();
+      }
+      LoadedScripts[src] = true;
+      return $.ajax({
+        type: 'GET',
+        url: src,
+        dataType: 'script',
+        cache: true,
+        crossDomain: true,
+        complete: cb
+      });
+    }
+    getScript('data.js', function(){
       items = window.dodoData;
       return refresh();
     });

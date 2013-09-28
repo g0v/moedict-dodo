@@ -23,7 +23,19 @@ $ \#next .click ->
     return
   refresh!
 
-$.getScript \data.js ->
+LoadedScripts = {}
+function getScript (src, cb)
+  return cb! if LoadedScripts[src]
+  LoadedScripts[src] = true
+  $.ajax do
+    type: \GET
+    url: src
+    dataType: \script
+    cache: yes
+    crossDomain: yes
+    complete: cb
+
+getScript \data.js ->
   items := window.dodo-data
   refresh!
 
