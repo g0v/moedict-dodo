@@ -6,8 +6,8 @@
     score = 0;
     key = '';
     record = '';
+    items = [];
     $('#proceed').hide();
-    items = window.dodoData;
     MAX = 10;
     $('#skip').click(function(){
       return refresh();
@@ -32,7 +32,10 @@
       }
       return refresh();
     });
-    refresh();
+    $.getScript('data.js', function(){
+      items = window.dodoData;
+      return refresh();
+    });
     function refresh(){
       var ref$, book, xKey, x, yKey, y;
       ref$ = split$.call(items[Math.floor(Math.random() * items.length)], '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4];

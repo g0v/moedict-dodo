@@ -1,11 +1,10 @@
 <- $
-
 score = 0
 key = ''
 record = ''
+items = []
 $ \#proceed .hide!
 
-items = window.dodo-data
 MAX = 10
 
 $ \#skip .click -> refresh!
@@ -23,7 +22,10 @@ $ \#next .click ->
     $ \#again .fadeIn!
     return
   refresh!
-refresh!
+
+$.getScript \data.js ->
+  items := window.dodo-data
+  refresh!
 
 function refresh
   [book, x-key, x, y-key, y] = items[Math.floor(Math.random! * items.length)] / '\n'
