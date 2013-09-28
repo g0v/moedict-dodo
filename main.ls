@@ -31,6 +31,8 @@ function refresh
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)
   $ \#y .html y.replace(/`/g, \<b>).replace(/~/g, \</b>)
+  $ \#x-key .text x-key .attr href: "https://www.moedict.tw/##{ x-key }" target: \_blank
+  $ \#y-key .text y-key .attr href: "https://www.moedict.tw/##{ y-key }" target: \_blank
 
   $ \.do-search .attr \target \_blank
   $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '') }\""
@@ -38,9 +40,11 @@ function refresh
 # $ \.do-search.z .attr \href "https://www.google.com.tw/\#q=#{ x.replace(/[`~「」]/g '') } #{ y.replace(/[`~「」]/g '') }"
 
   $ \#reason .val ''
+  $ \#keys .hide!
   $ \#proceed .fadeOut \fast
   $ \.choice .removeClass \green
   $ \.choice .click ->
     $ \.choice .removeClass \green
     $(@).addClass \green
+    $ \#keys .show!
     $ \#proceed .fadeIn \fast -> $ \#reason .focus!

@@ -16,7 +16,8 @@ body { background: #eee }
 #book { color: black !important }
 #info { top: 12px; right: 12px; position: absolute; color: #ddd }
 #info a { color: #eee !important; text-decoration: none }
-#info a:hover { text-decoration: underline }
+#info a:hover, #x-key:hover, #y-key:hover { text-decoration: underline }
+#x-key, #y-key { color: #555; text-decoration: none }
 form { background: url("logo.jpg") right top no-repeat }
 </style>
 </head>
@@ -45,7 +46,7 @@ form { background: url("logo.jpg") right top no-repeat }
 </div>
 <i class="basic icon check"></i>請選擇<strong>正確</strong>的例句。
 </div>
-<form class="ui form fluid segment attached bottom">
+<form class="ui form fluid segment attached ">
 <ol class="ui list">
 <li class="ui item buttons">
   <a id="x" class="choice ui massive button"></a>
@@ -61,13 +62,16 @@ form { background: url("logo.jpg") right top no-repeat }
 </ol>
 <div id="proceed" class="two fields">
   <div class="field">
-    <label><i class="icon basic help"></i>我這樣選的理由（可留白）：</label>
-    <input id="reason" placeholder="" class="ui input" type="text">
+    <label><i class="icon basic help"></i>我這樣選的理由：</label>
+    <input id="reason" placeholder="可留白" class="ui input" type="text">
   </div>
   <div class="field">
     <a id="next" class="ui blue submit button massive"><i class="icon basic check"></i>確定</a>
   </div>
 </div>
 </form>
+<div id="keys" class="ui attached bottom message" style="display: none">
+<i class="icon basic info"></i>出自「<a id="x-key"></a>」及「<a id="y-key"></a>」條目。
+</div>
 </div>
 </body></html>

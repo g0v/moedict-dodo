@@ -40,15 +40,25 @@
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
       $('#y').html(y.replace(/`/g, '<b>').replace(/~/g, '</b>'));
+      $('#x-key').text(xKey).attr({
+        href: "https://www.moedict.tw/#" + xKey,
+        target: '_blank'
+      });
+      $('#y-key').text(yKey).attr({
+        href: "https://www.moedict.tw/#" + yKey,
+        target: '_blank'
+      });
       $('.do-search').attr('target', '_blank');
       $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
       $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
       $('#reason').val('');
+      $('#keys').hide();
       $('#proceed').fadeOut('fast');
       $('.choice').removeClass('green');
       return $('.choice').click(function(){
         $('.choice').removeClass('green');
         $(this).addClass('green');
+        $('#keys').show();
         return $('#proceed').fadeIn('fast', function(){
           return $('#reason').focus();
         });
