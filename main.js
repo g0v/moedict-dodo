@@ -17,7 +17,7 @@
       row = key + "," + $('.choice.green').attr('id') + "," + $('#reason').val().replace(/[\n,]/g, '，') + "\n";
       $.ajax({
         dataType: 'jsonp',
-        url: "http://direct.moedict.tw:8080/?log=" + row
+        url: "https://moedict.tw/dodo/log/?log=" + row
       });
       record += row;
       $('#progress-text').text(score + " / 5");
