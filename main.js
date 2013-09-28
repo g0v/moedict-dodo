@@ -32,6 +32,7 @@
       $('.do-search').attr('target', '_blank');
       $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
       $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
+      $('#reason').val('');
       $('#proceed').fadeOut('fast');
       $('.choice').removeClass('green');
       return $('.choice').click(function(){
