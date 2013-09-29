@@ -7,11 +7,13 @@
     key = '';
     record = '';
     items = [];
-    $('#proceed').hide();
+    $('.hidden').hide();
     MAX = 10;
-    $('#skip').click(function(){
+    $('#quit').click(function(){
       $('.log-line:last').remove();
-      return refresh();
+      return $('#main').fadeOut(function(){
+        return $('#again').show();
+      });
     });
     $('#next').click(function(){
       var reason, row;
@@ -30,6 +32,10 @@
       case 'z':
         $('.log-x:last').addClass('warning');
         $('.log-y:last').addClass('warning');
+        break;
+      case 'w':
+        $('.log-x:last').addClass('active');
+        $('.log-y:last').addClass('active');
       }
       $('.log-reason:last').text(reason);
       $.ajax({
@@ -40,7 +46,6 @@
       $('#progress-text').text(score + " / " + MAX);
       $('#progress-bar').css('width', score / MAX * 100 + "%");
       if (score >= MAX) {
-        $('.choice').off('click');
         $('#main').fadeOut(function(){
           return $('#again').show();
         });
@@ -67,18 +72,30 @@
       items = window.dodoData;
       return refresh();
     });
+    function pickItem(){
+      var idx, result;
+      idx = Math.floor(Math.random() * items.length);
+      result = items[idx];
+      if (!result) {
+        return pickItem();
+      }
+      items[idx] = null;
+      return result;
+    }
     function refresh(){
       var ref$, book, xKey, x, yKey, y;
-      ref$ = split$.call(items[Math.floor(Math.random() * items.length)], '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4];
+      ref$ = split$.call(pickItem(), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4];
       key = xKey + "," + yKey;
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
       $('#y').html(y.replace(/`/g, '<b>').replace(/~/g, '</b>'));
-      $('#x-key').text(xKey).attr({
+      $('#x-key').text(xKey);
+      $('#y-key').text(yKey);
+      $('#x-key-link').attr({
         href: "https://www.moedict.tw/#" + xKey,
         target: '_blank'
       });
-      $('#y-key').text(yKey).attr({
+      $('#y-key-link').attr({
         href: "https://www.moedict.tw/#" + yKey,
         target: '_blank'
       });
@@ -88,15 +105,17 @@
         'class': 'book'
       }).text(book), $('<td/>', {
         'class': 'log-x'
-      }).html($('#x').html()).append($("<span><br><i class='icon book'></i></span>").append($('<a/>', {
+      }).html($('#x').html()).append($("<span><br></span>").append($('<a/>', {
+        'class': 'key-link',
         href: "https://www.moedict.tw/#" + xKey,
         target: '_blank'
-      }).text(xKey))), $('<td/>', {
+      }).text(xKey).prepend($("<i class='icon external url'></i>")))), $('<td/>', {
         'class': 'log-y'
-      }).html($('#y').html()).append($("<span><br><i class='icon book'></i></span>").append($('<a/>', {
+      }).html($('#y').html()).append($("<span><br></span>").append($('<a/>', {
+        'class': 'key-link',
         href: "https://www.moedict.tw/#" + yKey,
         target: '_blank'
-      }).text(yKey))), $('<td/>', {
+      }).text(yKey).prepend($("<i class='icon external url'></i>")))), $('<td/>', {
         'class': 'log-reason'
       })));
       $('.do-search').attr('target', '_blank');
