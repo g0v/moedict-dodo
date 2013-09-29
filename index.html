@@ -18,6 +18,7 @@ body { background: #eee }
 #book { color: black !important }
 #info { top: 12px; right: 12px; position: absolute; color: #ddd }
 #info a { color: #eee !important; text-decoration: none }
+.tag { margin: 6px 3px 0px }
 td a { color: #666 !important; text-decoration: none; float: right }
 #info a:hover, #x-key-link:hover, #y-key-link:hover, td a:hover, .key-link:hover { text-decoration: underline }
 #x-key-link, #y-key-link, .key-link { color: #55a; text-decoration: none }
@@ -71,10 +72,21 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
       10px">無法判斷</a>
 </li>
 </ol>
-<div id="proceed" class="two fields hidden">
+<div id="proceed" class="hidden two fields">
   <div class="field">
     <label><i class="icon help"></i>我這樣選的理由：</label>
     <input id="reason" placeholder="可留白，但「都有問題」時請註明原因" class="ui input" type="text">
+    <a class="ui mini button tag">非常明顯</a>
+    <a class="ui mini button tag">不太確定</a>
+    <a class="ui mini button tag">參考網址</a>
+    <a class="ui mini button tag">條目名稱</a>
+    <a class="ui mini button tag">異體字</a>
+    <a class="ui mini button tag">文義</a>
+    <a class="ui mini button tag">體裁</a>
+    <a class="ui mini button tag">排比</a>
+    <a class="ui mini button tag">對仗</a>
+    <a class="ui mini button tag">押韻</a>
+    <a class="ui mini button tag">成語</a>
   </div>
   <div class="field">
     <a id="next" class="ui blue submit button massive"><i class="icon check"></i>確定</a>

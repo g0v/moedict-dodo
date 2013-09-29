@@ -85,8 +85,10 @@ function refresh
   #$ \#keys .hide!
   $ \#proceed .fadeOut \fast
   $ \.choice .removeClass \green
-  $ \.choice .click ->
+  $ \.choice .off \click .click ->
     $ \.choice .removeClass \green
     $(@).addClass \green
-    #$ \#keys .show!
-    $ \#proceed .fadeIn \fast -> $ \#reason .focus!
+    $ \.tag .off \click .click ->
+      $ \#reason .val ~> "#{ $ \#reason .val! }[#{ $(@).text! }]"
+    $ \#proceed .fadeIn \fast ->
+      $ \#reason .focus!

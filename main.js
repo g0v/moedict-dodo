@@ -124,9 +124,15 @@
       $('#reason').val('');
       $('#proceed').fadeOut('fast');
       $('.choice').removeClass('green');
-      return $('.choice').click(function(){
+      return $('.choice').off('click').click(function(){
         $('.choice').removeClass('green');
         $(this).addClass('green');
+        $('.tag').off('click').click(function(){
+          var this$ = this;
+          return $('#reason').val(function(){
+            return $('#reason').val() + "[" + $(this$).text() + "]";
+          });
+        });
         return $('#proceed').fadeIn('fast', function(){
           return $('#reason').focus();
         });
