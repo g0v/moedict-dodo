@@ -10,12 +10,28 @@
     $('#proceed').hide();
     MAX = 10;
     $('#skip').click(function(){
+      $('.log-line:last').remove();
       return refresh();
     });
     $('#next').click(function(){
-      var row;
+      var reason, row;
       score++;
-      row = key + "," + $('.choice.green').attr('id') + "," + $('#reason').val().replace(/[\n,]/g, '，') + "\n";
+      reason = $('#reason').val().replace(/[\n,]/g, '，');
+      row = key + "," + $('.choice.green').attr('id') + "," + reason + "\n";
+      switch ($('.choice.green').attr('id')) {
+      case 'x':
+        $('.log-x:last').addClass('positive');
+        $('.log-y:last').addClass('negative');
+        break;
+      case 'y':
+        $('.log-x:last').addClass('negative');
+        $('.log-y:last').addClass('positive');
+        break;
+      case 'z':
+        $('.log-x:last').addClass('warning');
+        $('.log-y:last').addClass('warning');
+      }
+      $('.log-reason:last').text(reason);
       $.ajax({
         dataType: 'jsonp',
         url: "https://www.moedict.tw/dodo/log/?log=" + encodeURIComponent(row)
@@ -24,10 +40,10 @@
       $('#progress-text').text(score + " / " + MAX);
       $('#progress-bar').css('width', score / MAX * 100 + "%");
       if (score >= MAX) {
-        $('#again-info').text("試玩結束，感謝您的參與！已經送出以下紀錄：\n\n" + record);
         $('.choice').off('click');
-        $('#main').fadeOut();
-        $('#again').fadeIn();
+        $('#main').fadeOut(function(){
+          return $('#again').show();
+        });
         return;
       }
       return refresh();
@@ -66,6 +82,23 @@
         href: "https://www.moedict.tw/#" + yKey,
         target: '_blank'
       });
+      $('#log').append($('<tr/>', {
+        'class': 'log-line'
+      }).append($('<td/>', {
+        'class': 'book'
+      }).text(book), $('<td/>', {
+        'class': 'log-x'
+      }).html($('#x').html()).append($("<span><br><i class='icon book'></i></span>").append($('<a/>', {
+        href: "https://www.moedict.tw/#" + xKey,
+        target: '_blank'
+      }).text(xKey))), $('<td/>', {
+        'class': 'log-y'
+      }).html($('#y').html()).append($("<span><br><i class='icon book'></i></span>").append($('<a/>', {
+        href: "https://www.moedict.tw/#" + yKey,
+        target: '_blank'
+      }).text(yKey))), $('<td/>', {
+        'class': 'log-reason'
+      })));
       $('.do-search').attr('target', '_blank');
       $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
       $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
