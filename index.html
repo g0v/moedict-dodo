@@ -47,12 +47,12 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 <div id="main" class="ui" style="padding: 20px 5px">
 <div class="ui message blue attached">
 <h2 class="ui right floated header">
-<a id="skip" class="ui icon button black"><i class="clockwise basic icon"></i> 跳過</a>
+<a id="skip" class="ui icon button black"><i class="repeat icon"></i> 跳過</a>
 </h2>
 <div id="book" class="header">
-載入中，請稍候...
+<i class="icon loading"></i>載入中，請稍候...
 </div>
-<i class="basic icon info"></i>底下是我們從辭典中比對出引文用字不同的條目，請幫忙挑出<strong>正確</strong>的例句。
+<i class="icon info"></i>底下是我們從辭典中比對出引文用字不同的條目，請幫忙挑出<strong>正確</strong>的例句。
 </div>
 <form class="ui form fluid segment attached " onsubmit="$('#next').trigger('click'); return false">
 <ol class="ui list">
@@ -70,16 +70,16 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 </ol>
 <div id="proceed" class="two fields">
   <div class="field">
-    <label><i class="icon basic help"></i>我這樣選的理由：</label>
+    <label><i class="icon help"></i>我這樣選的理由：</label>
     <input id="reason" placeholder="可留白" class="ui input" type="text">
   </div>
   <div class="field">
-    <a id="next" class="ui blue submit button massive"><i class="icon basic check"></i>確定</a>
+    <a id="next" class="ui blue submit button massive"><i class="icon check"></i>確定</a>
   </div>
 </div>
 </form>
 <div id="keys" class="ui attached bottom message">
-<i class="icon basic book"></i>出自「<a id="x-key">...</a>」及「<a id="y-key">...</a>」條目。
+<i class="icon book"></i>出自「<a id="x-key">...</a>」及「<a id="y-key">...</a>」條目。
 </div>
 </div>
 </body></html>
