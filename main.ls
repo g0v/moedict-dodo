@@ -131,16 +131,16 @@ function refresh (fixed-idx)
   $ \.do-search .attr \target \_blank
   $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '') }\""
   $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#{ y.replace(/[`~「」]/g '') }\""
-# $ \.do-search.z .attr \href "https://www.google.com.tw/\#q=#{ x.replace(/[`~「」]/g '') } #{ y.replace(/[`~「」]/g '') }"
 
   $ \#reason .val ''
-  #$ \#keys .hide!
   $ \#proceed .fadeOut \fast
+  $ \#notice .fadeIn \fast
   $ \.choice .removeClass \green
   $ \.choice .off \click .click ->
     $ \.choice .removeClass \green
     $(@).addClass \green
     $ \.tag .off \click .click ->
       $ \#reason .val ~> "#{ $ \#reason .val! }[#{ $(@).text! }]"
-    $ \#proceed .fadeIn \fast ->
-      $ \#reason .focus!
+    <- $ \#notice .fadeOut \fast
+    <- $ \#proceed .fadeIn \fast
+    $ \#reason .focus!

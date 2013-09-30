@@ -211,6 +211,7 @@
       $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
       $('#reason').val('');
       $('#proceed').fadeOut('fast');
+      $('#notice').fadeIn('fast');
       $('.choice').removeClass('green');
       return $('.choice').off('click').click(function(){
         $('.choice').removeClass('green');
@@ -221,8 +222,10 @@
             return $('#reason').val() + "[" + $(this$).text() + "]";
           });
         });
-        return $('#proceed').fadeIn('fast', function(){
-          return $('#reason').focus();
+        return $('#notice').fadeOut('fast', function(){
+          return $('#proceed').fadeIn('fast', function(){
+            return $('#reason').focus();
+          });
         });
       });
     }
