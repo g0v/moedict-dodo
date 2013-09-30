@@ -54,7 +54,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 <div id="book" class="header">
 <i class="icon loading"></i>載入中，請稍候...
 </div>
-<i class="icon info"></i>底下是我們從辭典中比對出引文用字不同的條目，請幫忙挑出<strong>正確</strong>的例句。
+<i class="icon info"></i>底下是程式自動比對出辭典裡引文用字不同的條目，請幫忙點選<strong>正確</strong>的例句。
 </div>
 <form class="ui form fluid segment attached " onsubmit="$('#next').trigger('click'); return false">
 <ol class="ui list">
@@ -72,6 +72,10 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
       10px">無法判斷</a>
 </li>
 </ol>
+<div class="ui gray">
+    <i class="info icon"></i>點按條目右方的「<span class="link ui mini"><i
+            class="search icon"></i></span>&nbsp;&nbsp;」按鈕可顯示搜尋引擎頁面。如果難以判定，請選「無法判斷」。
+</div>
 <div id="proceed" class="hidden two fields">
   <div class="field">
     <label><i class="icon help"></i>我這樣選的理由：</label>
