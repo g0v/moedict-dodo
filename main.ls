@@ -57,22 +57,20 @@ window.seen = {}
 window.total = 0
 getScript \data.js ->
   items := window.dodo-data
-  refresh! unless grok-hash!
-  $.get \https://www.moedict.tw/dodo/log.txt (data) ->
-    window.seen = data
-    for line in data.split(/[\r\n]/) | line is /^([^,]+,[^,]+),([wxyz])/
-      key = RegExp.$1
-      val = RegExp.$2
-      if window.seen[key]
-        window.seen[key] += val
-      else
-        window.seen[key] = val
-      window.total++ if val is /[xyz]/
-    refresh-total!
+  return if grok-hash!
+  do retry = ->
+    return setTimeout retry, 100ms unless window.total
+    refresh!
+$.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" (data) ->
+  window.seen = data
+  for line in data.split(/[\r\n]/) | line is /^[^,]+,[^,]+,[xyz]/
+    window.total++
+  refresh-total!
 
 refresh-total = window.refresh-total = ->
+  return setTimeout refresh-total, 100ms unless items.length
   percent = Math.floor(window.total / items.length * 100)
-  $ \#total-text .text "目前進度：#{window.total} / #{ items.length } (#percent%)"
+  $ \#total-text .text "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
   $ \#total-bar .css \width "#percent%"
 
 function pick-item (idx)

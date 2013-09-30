@@ -87,35 +87,36 @@
     window.seen = {};
     window.total = 0;
     getScript('data.js', function(){
+      var retry;
       items = window.dodoData;
-      if (!grokHash()) {
-        refresh();
+      if (grokHash()) {
+        return;
       }
-      return $.get('https://www.moedict.tw/dodo/log.txt', function(data){
-        var i$, ref$, len$, line, key, val;
-        window.seen = data;
-        for (i$ = 0, len$ = (ref$ = data.split(/[\r\n]/)).length; i$ < len$; ++i$) {
-          line = ref$[i$];
-          if (/^([^,]+,[^,]+),([wxyz])/.exec(line)) {
-            key = RegExp.$1;
-            val = RegExp.$2;
-            if (window.seen[key]) {
-              window.seen[key] += val;
-            } else {
-              window.seen[key] = val;
-            }
-            if (/[xyz]/.exec(val)) {
-              window.total++;
-            }
-          }
+      return (retry = function(){
+        if (!window.total) {
+          return setTimeout(retry, 100);
         }
-        return refreshTotal();
-      });
+        return refresh();
+      })();
+    });
+    $.get("https://www.moedict.tw/dodo/log.txt?_=" + Math.random(), function(data){
+      var i$, ref$, len$, line;
+      window.seen = data;
+      for (i$ = 0, len$ = (ref$ = data.split(/[\r\n]/)).length; i$ < len$; ++i$) {
+        line = ref$[i$];
+        if (/^[^,]+,[^,]+,[xyz]/.exec(line)) {
+          window.total++;
+        }
+      }
+      return refreshTotal();
     });
     refreshTotal = window.refreshTotal = function(){
       var percent;
+      if (!items.length) {
+        return setTimeout(refreshTotal, 100);
+      }
       percent = Math.floor(window.total / items.length * 100);
-      $('#total-text').text("目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
+      $('#total-text').text("第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
       return $('#total-bar').css('width', percent + "%");
     };
     function pickItem(idx){
