@@ -32,7 +32,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 #book, #x-key, #y-key, .choice, td { font-family: "MOEDICT", "Lantinghei TC", "黑體-繁", "微軟正黑體", "儷黑 Pro", "蘋果儷中黑", "Adobe 繁黑體 Std", "cwTex 明體", "Adobe 明體 Std", "PMingLiU", "MingLiU", sans-serif, "HanaMinA", "HanaMinB", "HAN NOM A", "HAN NOM B"; font-weight: normal !important; }
 </style>
 </head>
-<body>
+<body onhashchange="grokHash()">
 <div class="ui black progress large" style="background: black; color: white">
 <div id="progress-bar" class="bar" style="width:0%">
     <img src="https://www.moedict.tw/dodo/icon.png" width="24" height="24" style="float: left; padding-right: 5px">
@@ -144,7 +144,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
     <a class="ui red large button" href="https://plus.google.com/share?url=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="google plus icon"></i>分享</a>
             <br>
             <br>
-    <a id="again-action" class="ui secondary button massive" onclick="window.location = document.URL">
+    <a id="again-action" class="ui secondary button massive" onclick="restart()">
         <i class="icon repeat"></i>
         再來一次</a>
 </center>

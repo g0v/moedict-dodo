@@ -2,7 +2,7 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, key, record, items, MAX, LoadedScripts;
+    var score, key, record, items, MAX, LoadedScripts, restart, grokHash;
     score = 0;
     key = '';
     record = '';
@@ -68,23 +68,49 @@
         complete: cb
       });
     }
+    window.restart = restart = function(idx){
+      idx == null && (idx = '');
+      return window.location = document.URL.replace(/#.*$/, idx);
+    };
+    window.grokHash = grokHash = function(){
+      if (/^#(\d+)/.exec(location.hash)) {
+        refresh(RegExp.$1);
+        return true;
+      }
+      return false;
+    };
     getScript('data.js', function(){
       items = window.dodoData;
-      return refresh();
+      if (!grokHash()) {
+        return refresh();
+      }
     });
-    function pickItem(){
-      var idx, result;
-      idx = Math.floor(Math.random() * items.length);
-      result = items[idx];
+    function pickItem(idx){
+      var result, hash, e;
+      idx || (idx = Math.floor(Math.random() * items.length));
+      result = (function(){
+        try {
+          return items[+idx];
+        } catch (e$) {}
+      }());
       if (!result) {
         return pickItem();
       }
       items[idx] = null;
-      return result;
+      hash = "#" + idx;
+      if (/^#(\d+)/.exec(location.hash) && location.hash + "" !== hash) {
+        try {
+          history.pushState(null, null, hash);
+        } catch (e$) {
+          e = e$;
+          location.replace(hash);
+        }
+      }
+      return result + "\n" + idx;
     }
-    function refresh(){
+    function refresh(idx){
       var ref$, book, xKey, x, yKey, y;
-      ref$ = split$.call(pickItem(), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4];
+      ref$ = split$.call(pickItem(idx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
@@ -103,7 +129,11 @@
         'class': 'log-line'
       }).append($('<td/>', {
         'class': 'book'
-      }).text(book), $('<td/>', {
+      }).text(book).append($("<span><br></span>").append($('<a/>', {
+        'class': 'ui button mini key-link',
+        href: "#" + idx,
+        target: '_blank'
+      }).text("重做").prepend($("<i class='icon repeat'></i>")))), $('<td/>', {
         'class': 'log-x'
       }).html($('#x').html()).append($("<span><br></span>").append($('<a/>', {
         'class': 'key-link',

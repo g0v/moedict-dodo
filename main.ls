@@ -41,19 +41,32 @@ function getScript (src, cb)
     crossDomain: yes
     complete: cb
 
+window.restart = restart = (idx='') ->
+  window.location = document.URL.replace(/#.*$/, idx)
+
+window.grok-hash = grok-hash = ->
+  if location.hash is /^#(\d+)/
+    refresh RegExp.$1
+    return true
+  return false
+
 getScript \data.js ->
   items := window.dodo-data
-  refresh!
+  refresh! unless grok-hash!
 
-function pick-item
-  idx = Math.floor(Math.random! * items.length)
-  result = items[idx]
+function pick-item (idx)
+  idx ||= Math.floor(Math.random! * items.length)
+  result = try items[+idx]
   return pick-item! unless result
   items[idx] = null
-  return result
+  hash = "##idx"
+  if location.hash is /^#(\d+)/ and "#{location.hash}" isnt hash
+    try history.pushState null, null, hash
+      catch => location.replace hash
+  return "#result\n#idx"
 
-function refresh
-  [book, x-key, x, y-key, y] = pick-item!  / '\n'
+function refresh (idx)
+  [book, x-key, x, y-key, y, idx] = pick-item(idx)  / '\n'
   key := "#x-key,#y-key"
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)
@@ -64,7 +77,10 @@ function refresh
   $ \#y-key-link .attr href: "https://www.moedict.tw/##{ y-key }" target: \_blank
 
   $ \#log .append $(\<tr/> class: \log-line).append(
-    $(\<td/> class: \book).text(book)
+    $(\<td/> class: \book).text(book).append do
+      $("<span><br></span>").append do
+        $(\<a/> class: 'ui button mini key-link' href: "##idx" target: \_blank).text "重做"
+          .prepend $("<i class='icon repeat'></i>")
     $(\<td/> class: \log-x).html($ \#x .html!).append do
       $("<span><br></span>").append do
         $(\<a/> class: \key-link href: "https://www.moedict.tw/##{ x-key }" target: \_blank).text x-key
