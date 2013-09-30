@@ -77,11 +77,13 @@ refresh-total = window.refresh-total = ->
   return setTimeout refresh-total, 100ms unless items.length
   if window.total < items.length
     percent = Math.floor(window.total / items.length * 100)
-    $ \#total-text .text "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
+    text = "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
   else
     percent = Math.floor(window.unique / items.length * 100)
-    $ \#total-text .text "第二階段「交叉比對」。目前進度：#{window.unique} / #{ items.length } (#percent%)"
+    text = "第二階段「交叉比對」。目前進度：#{window.unique} / #{ items.length } (#percent%)"
   $ \#total-bar .css \width "#percent%"
+  <- setTimeout _, 500ms
+  $ \#total-text .hide! .text text .fadeIn \fast
 
 function pick-item (idx)
   idx ||= Math.floor(Math.random! * items.length)

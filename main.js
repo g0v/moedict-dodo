@@ -121,18 +121,21 @@
       return refreshTotal();
     });
     refreshTotal = window.refreshTotal = function(){
-      var percent;
+      var percent, text;
       if (!items.length) {
         return setTimeout(refreshTotal, 100);
       }
       if (window.total < items.length) {
         percent = Math.floor(window.total / items.length * 100);
-        $('#total-text').text("第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
+        text = "第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)";
       } else {
         percent = Math.floor(window.unique / items.length * 100);
-        $('#total-text').text("第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)");
+        text = "第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)";
       }
-      return $('#total-bar').css('width', percent + "%");
+      $('#total-bar').css('width', percent + "%");
+      return setTimeout(function(){
+        return $('#total-text').hide().text(text).fadeIn('fast');
+      }, 500);
     };
     function pickItem(idx){
       var result, hash, e;
