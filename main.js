@@ -94,7 +94,7 @@
       return $.get('https://www.moedict.tw/dodo/log.txt', function(data){
         var i$, ref$, len$, line, key, val;
         window.seen = data;
-        for (i$ = 0, len$ = (ref$ = data.split('\n')).length; i$ < len$; ++i$) {
+        for (i$ = 0, len$ = (ref$ = data.split(/[\r\n]/)).length; i$ < len$; ++i$) {
           line = ref$[i$];
           if (/^([^,]+,[^,]+),([wxyz])/.exec(line)) {
             key = RegExp.$1;

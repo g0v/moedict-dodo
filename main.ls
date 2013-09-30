@@ -60,7 +60,7 @@ getScript \data.js ->
   refresh! unless grok-hash!
   $.get \https://www.moedict.tw/dodo/log.txt (data) ->
     window.seen = data
-    for line in data.split('\n') | line is /^([^,]+,[^,]+),([wxyz])/
+    for line in data.split(/[\r\n]/) | line is /^([^,]+,[^,]+),([wxyz])/
       key = RegExp.$1
       val = RegExp.$2
       if window.seen[key]
