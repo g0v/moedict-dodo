@@ -13,12 +13,15 @@ $ \#quit .click ->
 $ \#next .click ->
   score++
   reason = $ \#reason .val! .replace(/[\n,]/g \，)
-  row = "#key,#{ $ \.choice.green .attr \id },#reason\n"
-  switch $ \.choice.green .attr \id
+  choice = $ \.choice.green .attr \id
+  row = "#key,#choice,#reason\n"
+  switch choice
   | \x => $(\.log-x:last).addClass \positive; $(\.log-y:last).addClass \negative
   | \y => $(\.log-x:last).addClass \negative; $(\.log-y:last).addClass \positive
   | \z => $(\.log-x:last).addClass \warning; $(\.log-y:last).addClass \warning
   | \w => $(\.log-x:last).addClass \active; $(\.log-y:last).addClass \active
+  window.total++ unless choice is \w
+  refresh-total!
   $ \.log-reason:last .text reason
   $.ajax({ dataType: 'jsonp', url: "https://www.moedict.tw/dodo/log/?log=#{ encodeURIComponent row }" })
   record += row
@@ -50,12 +53,27 @@ window.grok-hash = grok-hash = ->
     return true
   return false
 
-window.seen = ""
+window.seen = {}
+window.total = 0
 getScript \data.js ->
   items := window.dodo-data
   refresh! unless grok-hash!
+  $.get \https://www.moedict.tw/dodo/log.txt (data) ->
+    window.seen = data
+    for line in data.split('\n') | line is /^([^,]+,[^,]+),([wxyz])/
+      key = RegExp.$1
+      val = RegExp.$2
+      if window.seen[key]
+        window.seen[key] += val
+      else
+        window.seen[key] = val
+      window.total++ if val is /[xyz]/
+    refresh-total!
 
-$.get \https://www.moedict.tw/dodo/log.txt (data) -> window.seen = data
+refresh-total = window.refresh-total = ->
+  percent = Math.floor(window.total / items.length * 100)
+  $ \#total-text .text "目前進度：#{window.total} / #{ items.length } (#percent%)"
+  $ \#total-bar .css \width "#percent%"
 
 function pick-item (idx)
   idx ||= Math.floor(Math.random! * items.length)
@@ -71,10 +89,10 @@ function pick-item (idx)
 function refresh (fixed-idx)
   [book, x-key, x, y-key, y, idx] = pick-item(fixed-idx)  / '\n'
   key := "#x-key,#y-key"
-  if not fixed-idx and ~window.seen.index-of("\n#key")
+  if not fixed-idx and prior = window.seen[key]
     # Reroll with 90% certainty if it's judged before
-    # Reroll with 75% certainty if it's passed before
-    factor = if ~window.seen.index-of("\n#key,w") then 4 else 10
+    # Reroll with 50% certainty if it's passed before
+    factor = if prior is /^w+$/ then 2 else 10
     return refresh! if Math.floor(Math.random! * factor)
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)

@@ -2,7 +2,7 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, key, record, items, MAX, LoadedScripts, restart, grokHash;
+    var score, key, record, items, MAX, LoadedScripts, restart, grokHash, refreshTotal;
     score = 0;
     key = '';
     record = '';
@@ -16,11 +16,12 @@
       });
     });
     $('#next').click(function(){
-      var reason, row;
+      var reason, choice, row;
       score++;
       reason = $('#reason').val().replace(/[\n,]/g, '，');
-      row = key + "," + $('.choice.green').attr('id') + "," + reason + "\n";
-      switch ($('.choice.green').attr('id')) {
+      choice = $('.choice.green').attr('id');
+      row = key + "," + choice + "," + reason + "\n";
+      switch (choice) {
       case 'x':
         $('.log-x:last').addClass('positive');
         $('.log-y:last').addClass('negative');
@@ -37,6 +38,10 @@
         $('.log-x:last').addClass('active');
         $('.log-y:last').addClass('active');
       }
+      if (choice !== 'w') {
+        window.total++;
+      }
+      refreshTotal();
       $('.log-reason:last').text(reason);
       $.ajax({
         dataType: 'jsonp',
@@ -79,16 +84,40 @@
       }
       return false;
     };
-    window.seen = "";
+    window.seen = {};
+    window.total = 0;
     getScript('data.js', function(){
       items = window.dodoData;
       if (!grokHash()) {
-        return refresh();
+        refresh();
       }
+      return $.get('https://www.moedict.tw/dodo/log.txt', function(data){
+        var i$, ref$, len$, line, key, val;
+        window.seen = data;
+        for (i$ = 0, len$ = (ref$ = data.split('\n')).length; i$ < len$; ++i$) {
+          line = ref$[i$];
+          if (/^([^,]+,[^,]+),([wxyz])/.exec(line)) {
+            key = RegExp.$1;
+            val = RegExp.$2;
+            if (window.seen[key]) {
+              window.seen[key] += val;
+            } else {
+              window.seen[key] = val;
+            }
+            if (/[xyz]/.exec(val)) {
+              window.total++;
+            }
+          }
+        }
+        return refreshTotal();
+      });
     });
-    $.get('https://www.moedict.tw/dodo/log.txt', function(data){
-      return window.seen = data;
-    });
+    refreshTotal = window.refreshTotal = function(){
+      var percent;
+      percent = Math.floor(window.total / items.length * 100);
+      $('#total-text').text("目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
+      return $('#total-bar').css('width', percent + "%");
+    };
     function pickItem(idx){
       var result, hash, e;
       idx || (idx = Math.floor(Math.random() * items.length));
@@ -113,11 +142,11 @@
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){
-      var ref$, book, xKey, x, yKey, y, idx, factor;
+      var ref$, book, xKey, x, yKey, y, idx, prior, factor;
       ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
-      if (!fixedIdx && ~window.seen.indexOf("\n" + key)) {
-        factor = ~window.seen.indexOf("\n" + key + ",w") ? 4 : 10;
+      if (!fixedIdx && (prior = window.seen[key])) {
+        factor = /^w+$/.exec(prior) ? 2 : 10;
         if (Math.floor(Math.random() * factor)) {
           return refresh();
         }
