@@ -41,6 +41,9 @@
       if (choice !== 'w') {
         window.total++;
       }
+      if (choice !== 'w') {
+        window.unique++;
+      }
       refreshTotal();
       $('.log-reason:last').text(reason);
       $.ajax({
@@ -86,6 +89,7 @@
     };
     window.seen = {};
     window.total = 0;
+    window.unique = 0;
     getScript('data.js', function(){
       var retry;
       items = window.dodoData;
@@ -100,12 +104,18 @@
       })();
     });
     $.get("https://www.moedict.tw/dodo/log.txt?_=" + Math.random(), function(data){
-      var i$, ref$, len$, line;
+      var processed, i$, ref$, len$, line, key;
       window.seen = data;
+      processed = '\n';
       for (i$ = 0, len$ = (ref$ = data.split(/[\r\n]/)).length; i$ < len$; ++i$) {
         line = ref$[i$];
-        if (/^[^,]+,[^,]+,[xyz]/.exec(line)) {
+        if (/^([^,]+,[^,]+),[xyz]/.exec(line)) {
+          key = RegExp.$1;
           window.total++;
+          if (!~processed.indexOf(key)) {
+            window.unique++;
+          }
+          processed += key;
         }
       }
       return refreshTotal();
@@ -115,8 +125,13 @@
       if (!items.length) {
         return setTimeout(refreshTotal, 100);
       }
-      percent = Math.floor(window.total / items.length * 100);
-      $('#total-text').text("第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
+      if (window.total < items.length) {
+        percent = Math.floor(window.total / items.length * 100);
+        $('#total-text').text("第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)");
+      } else {
+        percent = Math.floor(window.unique / items.length * 100);
+        $('#total-text').text("第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)");
+      }
       return $('#total-bar').css('width', percent + "%");
     };
     function pickItem(idx){

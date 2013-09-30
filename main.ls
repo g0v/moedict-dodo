@@ -21,6 +21,7 @@ $ \#next .click ->
   | \z => $(\.log-x:last).addClass \warning; $(\.log-y:last).addClass \warning
   | \w => $(\.log-x:last).addClass \active; $(\.log-y:last).addClass \active
   window.total++ unless choice is \w
+  window.unique++ unless choice is \w
   refresh-total!
   $ \.log-reason:last .text reason
   $.ajax({ dataType: 'jsonp', url: "https://www.moedict.tw/dodo/log/?log=#{ encodeURIComponent row }" })
@@ -55,6 +56,7 @@ window.grok-hash = grok-hash = ->
 
 window.seen = {}
 window.total = 0
+window.unique = 0
 getScript \data.js ->
   items := window.dodo-data
   return if grok-hash!
@@ -63,14 +65,22 @@ getScript \data.js ->
     refresh!
 $.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" (data) ->
   window.seen = data
-  for line in data.split(/[\r\n]/) | line is /^[^,]+,[^,]+,[xyz]/
+  processed = '\n'
+  for line in data.split(/[\r\n]/) | line is /^([^,]+,[^,]+),[xyz]/
+    key = RegExp.$1
     window.total++
+    window.unique++ unless ~processed.index-of(key)
+    processed += key
   refresh-total!
 
 refresh-total = window.refresh-total = ->
   return setTimeout refresh-total, 100ms unless items.length
-  percent = Math.floor(window.total / items.length * 100)
-  $ \#total-text .text "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
+  if window.total < items.length
+    percent = Math.floor(window.total / items.length * 100)
+    $ \#total-text .text "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
+  else
+    percent = Math.floor(window.unique / items.length * 100)
+    $ \#total-text .text "第二階段「交叉比對」。目前進度：#{window.unique} / #{ items.length } (#percent%)"
   $ \#total-bar .css \width "#percent%"
 
 function pick-item (idx)
