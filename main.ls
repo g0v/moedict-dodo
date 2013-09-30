@@ -50,9 +50,12 @@ window.grok-hash = grok-hash = ->
     return true
   return false
 
+window.seen = ""
 getScript \data.js ->
   items := window.dodo-data
   refresh! unless grok-hash!
+
+$.get \https://www.moedict.tw/dodo/log.txt (data) -> window.seen = data
 
 function pick-item (idx)
   idx ||= Math.floor(Math.random! * items.length)
@@ -65,9 +68,14 @@ function pick-item (idx)
       catch => location.replace hash
   return "#result\n#idx"
 
-function refresh (idx)
-  [book, x-key, x, y-key, y, idx] = pick-item(idx)  / '\n'
+function refresh (fixed-idx)
+  [book, x-key, x, y-key, y, idx] = pick-item(fixed-idx)  / '\n'
   key := "#x-key,#y-key"
+  if not fixed-idx and ~window.seen.index-of("\n#key")
+    # Reroll with 90% certainty if it's judged before
+    # Reroll with 75% certainty if it's passed before
+    factor = if ~window.seen.index-of("\n#key,w") then 4 else 10
+    return refresh! if Math.floor(Math.random! * factor)
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)
   $ \#y .html y.replace(/`/g, \<b>).replace(/~/g, \</b>)

@@ -79,11 +79,15 @@
       }
       return false;
     };
+    window.seen = "";
     getScript('data.js', function(){
       items = window.dodoData;
       if (!grokHash()) {
         return refresh();
       }
+    });
+    $.get('https://www.moedict.tw/dodo/log.txt', function(data){
+      return window.seen = data;
     });
     function pickItem(idx){
       var result, hash, e;
@@ -108,10 +112,16 @@
       }
       return result + "\n" + idx;
     }
-    function refresh(idx){
-      var ref$, book, xKey, x, yKey, y;
-      ref$ = split$.call(pickItem(idx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
+    function refresh(fixedIdx){
+      var ref$, book, xKey, x, yKey, y, idx, factor;
+      ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
+      if (!fixedIdx && ~window.seen.indexOf("\n" + key)) {
+        factor = ~window.seen.indexOf("\n" + key + ",w") ? 4 : 10;
+        if (Math.floor(Math.random() * factor)) {
+          return refresh();
+        }
+      }
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
       $('#y').html(y.replace(/`/g, '<b>').replace(/~/g, '</b>'));
