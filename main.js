@@ -2,7 +2,7 @@
 (function(){
   var split$ = ''.split;
   $(function(){
-    var score, key, record, items, MAX, LoadedScripts, restart, grokHash, refreshTotal;
+    var score, key, record, items, MAX, LoadedScripts, restart, grokHash, refreshSeen, refreshTotal;
     score = 0;
     key = '';
     record = '';
@@ -48,7 +48,12 @@
       $('.log-reason:last').text(reason);
       $.ajax({
         dataType: 'jsonp',
-        url: "https://www.moedict.tw/dodo/log/?log=" + encodeURIComponent(row)
+        url: "https://www.moedict.tw/dodo/log/?log=" + encodeURIComponent(row) + "&offset=" + window.seen.length,
+        success: function(arg$){
+          var delta;
+          delta = arg$.delta;
+          return refreshSeen(window.seen + delta);
+        }
       });
       record += row;
       $('#progress-text').text(score + " / " + MAX);
@@ -87,9 +92,6 @@
       }
       return false;
     };
-    window.seen = {};
-    window.total = 0;
-    window.unique = 0;
     getScript('data.js', function(){
       var retry;
       items = window.dodoData;
@@ -103,9 +105,11 @@
         return refresh();
       })();
     });
-    $.get("https://www.moedict.tw/dodo/log.txt?_=" + Math.random(), function(data){
+    refreshSeen = function(data){
       var processed, i$, ref$, len$, line, key;
       window.seen = data;
+      window.total = 0;
+      window.unique = 0;
       processed = '\n';
       for (i$ = 0, len$ = (ref$ = data.split(/[\r\n]/)).length; i$ < len$; ++i$) {
         line = ref$[i$];
@@ -119,7 +123,8 @@
         }
       }
       return refreshTotal();
-    });
+    };
+    $.get("https://www.moedict.tw/dodo/log.txt?_=" + Math.random(), refreshSeen);
     refreshTotal = window.refreshTotal = function(){
       var percent, text;
       if (!items.length) {
@@ -133,6 +138,9 @@
         text = "第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)";
       }
       $('#total-bar').css('width', percent + "%");
+      if ($('#total-text').text()) {
+        return $('#total-text').text(text);
+      }
       return setTimeout(function(){
         return $('#total-text').hide().text(text).fadeIn('fast');
       }, 500);

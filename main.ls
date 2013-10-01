@@ -24,7 +24,7 @@ $ \#next .click ->
   window.unique++ unless choice is \w
   refresh-total!
   $ \.log-reason:last .text reason
-  $.ajax({ dataType: 'jsonp', url: "https://www.moedict.tw/dodo/log/?log=#{ encodeURIComponent row }" })
+  $.ajax dataType: 'jsonp', url: "https://www.moedict.tw/dodo/log/?log=#{ encodeURIComponent row }&offset=#{ window.seen.length }", success: ({delta}) -> refresh-seen (window.seen + delta)
   record += row
   $ \#progress-text .text "#score / #MAX"
   $ \#progress-bar .css \width "#{ score / MAX * 100 }%"
@@ -54,17 +54,17 @@ window.grok-hash = grok-hash = ->
     return true
   return false
 
-window.seen = {}
-window.total = 0
-window.unique = 0
 getScript \data.js ->
   items := window.dodo-data
   return if grok-hash!
   do retry = ->
     return setTimeout retry, 100ms unless window.total
     refresh!
-$.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" (data) ->
+
+refresh-seen = (data) ->
   window.seen = data
+  window.total = 0
+  window.unique = 0
   processed = '\n'
   for line in data.split(/[\r\n]/) | line is /^([^,]+,[^,]+),[xyz]/
     key = RegExp.$1
@@ -72,6 +72,8 @@ $.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" (data) ->
     window.unique++ unless ~processed.index-of(key)
     processed += key
   refresh-total!
+
+$.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" refresh-seen
 
 refresh-total = window.refresh-total = ->
   return setTimeout refresh-total, 100ms unless items.length
@@ -82,6 +84,7 @@ refresh-total = window.refresh-total = ->
     percent = Math.floor(window.unique / items.length * 100)
     text = "第二階段「交叉比對」。目前進度：#{window.unique} / #{ items.length } (#percent%)"
   $ \#total-bar .css \width "#percent%"
+  return $ \#total-text .text text if $ \#total-text .text!
   <- setTimeout _, 500ms
   $ \#total-text .hide! .text text .fadeIn \fast
 
