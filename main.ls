@@ -136,10 +136,21 @@ function refresh (fixed-idx)
   $ \.do-search .attr \target \_blank
 
   if book is \教育部重編國語辭典修訂本
+    $ \#chain-links .text ''
+    comma = ""
+    for chunk in (y - /中.*/ - /的意思.*/ - /[「」]/g).split \、
+      $ \#chain-links .append comma .append do
+        $(\<a/> class: \key-link href: "https://www.moedict.tw/##chunk" target: \_blank).text "「#{chunk}」"
+          .prepend $("<i class='icon external url'></i>")
+      comma = \、
+    $ \#key-links .hide!
+    $ \#chain-links .show!
     $ \#type .text "相似相反詞"
     $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#x-key\" \"#y-key\" \"反義\""
     $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#x-key\" \"#y-key\" \"同義\""
   else
+    $ \#key-links .show!
+    $ \#chain-links .hide!
     $ \#type .text "引文用字"
     $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '') }\""
     $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#{ y.replace(/[`~「」]/g '') }\""
