@@ -56,10 +56,12 @@ window.grok-hash = grok-hash = ->
 
 getScript \data.js ->
   items := window.dodo-data
-  return if grok-hash!
-  do retry = ->
-    return setTimeout retry, 100ms unless window.total
-    refresh!
+  getScript \oxynyms.js? ->
+    items ++= window.dodo-oxynyms
+    return if grok-hash!
+    do retry = ->
+      return setTimeout retry, 100ms unless window.total
+      refresh!
 
 refresh-seen = (data) ->
   window.seen = data
@@ -132,8 +134,15 @@ function refresh (fixed-idx)
   )
 
   $ \.do-search .attr \target \_blank
-  $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '') }\""
-  $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#{ y.replace(/[`~「」]/g '') }\""
+
+  if book is \教育部重編國語辭典修訂本
+    $ \#type .text "相似相反詞"
+    $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#x-key\" \"#y-key\" \"反義\""
+    $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#x-key\" \"#y-key\" \"同義\""
+  else
+    $ \#type .text "引文用字"
+    $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '') }\""
+    $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#{ y.replace(/[`~「」]/g '') }\""
 
   $ \#reason .val ''
   $ \#proceed .fadeOut \fast

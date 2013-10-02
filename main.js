@@ -93,17 +93,20 @@
       return false;
     };
     getScript('data.js', function(){
-      var retry;
       items = window.dodoData;
-      if (grokHash()) {
-        return;
-      }
-      return (retry = function(){
-        if (!window.total) {
-          return setTimeout(retry, 100);
+      return getScript('oxynyms.js?', function(){
+        var retry;
+        items = items.concat(window.dodoOxynyms);
+        if (grokHash()) {
+          return;
         }
-        return refresh();
-      })();
+        return (retry = function(){
+          if (!window.total) {
+            return setTimeout(retry, 100);
+          }
+          return refresh();
+        })();
+      });
     });
     refreshSeen = function(data){
       var processed, i$, ref$, len$, line, key;
@@ -215,8 +218,15 @@
         'class': 'log-reason'
       })));
       $('.do-search').attr('target', '_blank');
-      $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
-      $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
+      if (book === '教育部重編國語辭典修訂本') {
+        $('#type').text("相似相反詞");
+        $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + xKey + "\" \"" + yKey + "\" \"反義\"");
+        $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + xKey + "\" \"" + yKey + "\" \"同義\"");
+      } else {
+        $('#type').text("引文用字");
+        $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '') + "\"");
+        $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '') + "\"");
+      }
       $('#reason').val('');
       $('#proceed').fadeOut('fast');
       $('#notice').fadeIn('fast');
