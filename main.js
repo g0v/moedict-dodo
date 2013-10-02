@@ -232,7 +232,7 @@
         }
         $('#key-links').hide();
         $('#chain-links').show();
-        $('#type').text("相似相反詞");
+        $('#type').text("相似相反詞類");
         $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + xKey + "\" \"" + yKey + "\" \"反義\"");
         $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + xKey + "\" \"" + yKey + "\" \"同義\"");
       } else {
