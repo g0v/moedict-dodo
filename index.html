@@ -20,6 +20,7 @@ body { background: #eee }
 #info a { color: #eee !important; text-decoration: none }
 .tag { margin: 6px 3px 0px }
 td a { color: #666 !important; text-decoration: none; float: right }
+#idx { font-size: 12px; color: #999; font-weight: normal; margin-right: 5px }
 #info a:hover, #x-key-link:hover, #y-key-link:hover, td a:hover, .key-link:hover { text-decoration: underline }
 #x-key-link, #y-key-link, .key-link { color: #55a; text-decoration: none }
 form { background: url("logo.jpg") right top no-repeat }
@@ -99,9 +100,10 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 </form>
 <div id="keys" class="ui attached bottom message">
 <div class="ui header right floated" style="margin-top: -5px; margin-right: -5px">
-    <a class="ui facebook mini button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="facebook icon"></i>分享</a>
-    <a class="ui twitter mini button" href="https://twitter.com/share?url=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F&text=%E3%80%8C%E8%90%8C%E5%85%B8%E5%95%84%E6%9C%A8%E9%B3%A5%E3%80%8D%E6%8C%91%E9%8C%AF%E5%AD%97%E6%B4%BB%E5%8B%95%EF%BC%9A" target="_blank"><i class="twitter icon"></i> 分享</a>
-    <a class="ui red mini button" href="https://plus.google.com/share?url=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="google plus icon"></i>分享</a>
+    <a id="idx" class="key-link" target="_blank"></a>
+    <a class="ui facebook mini share button" data-href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="facebook icon"></i>分享</a>
+    <a class="ui twitter mini share button" data-href="https://twitter.com/share?text=%E3%80%8C%E8%90%8C%E5%85%B8%E5%95%84%E6%9C%A8%E9%B3%A5%E3%80%8D%E6%8C%91%E9%8C%AF%E5%AD%97%E6%B4%BB%E5%8B%95%EF%BC%9A&url=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="twitter icon"></i> 分享</a>
+    <a class="ui red mini share button" data-href="https://plus.google.com/share?url=https%3A%2F%2Fwww.moedict.tw%2Fdodo%2F" target="_blank"><i class="google plus icon"></i>分享</a>
 </div>
 
     <i class="icon book"></i>
@@ -114,7 +116,6 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
     <span id="chain-links">
     </span>
     條目。
-    <small id="idx"></small>
 </div>
 </div>
 <div id="again" class="ui message hidden" style="padding: 20px 5px"><center>

@@ -169,7 +169,10 @@
           location.replace(hash);
         }
       }
-      $('#idx').text("#" + idx);
+      $('#idx').text("#" + idx).attr('href', "https://www.moedict.tw/dodo/#" + idx);
+      $('.share.button').each(function(){
+        return $(this).attr('href', $(this).data('href') + "%23" + idx);
+      });
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){

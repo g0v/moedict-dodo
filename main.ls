@@ -99,7 +99,9 @@ function pick-item (idx)
   if location.hash is /^#(\d+)/ and "#{location.hash}" isnt hash
     try history.pushState null, null, hash
       catch => location.replace hash
-  $ \#idx .text "##idx"
+  $ \#idx .text "##idx" .attr \href "https://www.moedict.tw/dodo/##idx"
+  $ \.share.button .each ->
+    $(@).attr \href "#{ $(@).data(\href) }%23#idx"
   return "#result\n#idx"
 
 function refresh (fixed-idx)
