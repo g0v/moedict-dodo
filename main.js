@@ -169,6 +169,7 @@
           location.replace(hash);
         }
       }
+      $('#idx').text("#" + idx);
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){
