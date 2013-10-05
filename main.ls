@@ -80,10 +80,10 @@ $.get "https://www.moedict.tw/dodo/log.txt?_=#{ Math.random! }" refresh-seen
 refresh-total = window.refresh-total = ->
   return setTimeout refresh-total, 100ms unless items.length
   if window.total < items.length
-    percent = Math.floor(window.total / items.length * 100)
+    percent = Math.floor(window.total / items.length * 1000) / 10
     text = "第一階段「初校」。目前進度：#{window.total} / #{ items.length } (#percent%)"
   else
-    percent = Math.floor(window.unique / items.length * 100)
+    percent = Math.floor(window.unique / items.length * 1000) / 10
     text = "第二階段「交叉比對」。目前進度：#{window.unique} / #{ items.length } (#percent%)"
   $ \#total-bar .css \width "#percent%"
   return $ \#total-text .text text if $ \#total-text .text!
@@ -107,10 +107,10 @@ function pick-item (idx)
 function refresh (fixed-idx)
   [book, x-key, x, y-key, y, idx] = pick-item(fixed-idx)  / '\n'
   key := "#x-key,#y-key"
-  if not fixed-idx and prior = window.seen[key]
-    # Reroll with 90% certainty if it's judged before
-    # Reroll with 50% certainty if it's passed before
-    factor = if prior is /^w+$/ then 2 else 10
+  if not fixed-idx and ~window.seen.indexOf "\n#key,"
+    # Reroll with 95% certainty if it's judged before
+    # Reroll with 75% certainty if it's passed before
+    factor = if window.seen is //\n#key,[xyz]// then 4 else 20
     return refresh! if Math.floor(Math.random! * factor)
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)

@@ -134,10 +134,10 @@
         return setTimeout(refreshTotal, 100);
       }
       if (window.total < items.length) {
-        percent = Math.floor(window.total / items.length * 100);
+        percent = Math.floor(window.total / items.length * 1000) / 10;
         text = "第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)";
       } else {
-        percent = Math.floor(window.unique / items.length * 100);
+        percent = Math.floor(window.unique / items.length * 1000) / 10;
         text = "第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)";
       }
       $('#total-bar').css('width', percent + "%");
@@ -176,11 +176,11 @@
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){
-      var ref$, book, xKey, x, yKey, y, idx, prior, factor, comma, i$, len$, chunk;
+      var ref$, book, xKey, x, yKey, y, idx, factor, comma, i$, len$, chunk;
       ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
-      if (!fixedIdx && (prior = window.seen[key])) {
-        factor = /^w+$/.exec(prior) ? 2 : 10;
+      if (!fixedIdx && ~window.seen.indexOf("\n" + key + ",")) {
+        factor = RegExp('\\n' + key + ',[xyz]').exec(window.seen) ? 4 : 20;
         if (Math.floor(Math.random() * factor)) {
           return refresh();
         }
