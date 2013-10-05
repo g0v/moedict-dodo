@@ -2,7 +2,7 @@ ALL = Words!
 
 match-cache = {}
 
-cur = "一二三四五六八九十"[Math.floor(Math.random! * 10)]
+cur = "零星燎原拆陋政時雨潤物建新府"[Math.floor(Math.random! * 14)]
 while cur
   seen = {}
   scores = []
