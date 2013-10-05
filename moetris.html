@@ -1,25 +1,21 @@
+<html><head><meta charset="utf8"></head><body>
 <link rel="stylesheet" type="text/css" class="ui" href="./css/semantic.min.css">
 <script src="./javascript/jquery-1.9.1.min.js"></script>
-<div id="x" class="ui button large">萌</div>
-<style>
-    #x { position: absolute }
-</style>
-<script>
-$.fx.interval = 50;
-$(function(){
-    $('#x').css('top', 0);
-$('#x').animate({'top': 500}, 10000);
-//    $('#x').addClass('red');
-// .stop()
-//
-// ------- access key
-// !@#$%^         i = ice
-// QWERTY         o = fire
-// ASDFGH         p = time
+<script src="./moetris.js"></script>
+<div id="top" style="position: absolute; top: -90px; text-align: right">Score: <span id="score">0</span></div>
+<div id="proto" style="display: inline-block; position: absolute; top: -90px">
+<div id="wrap" class="ui button large" style=""><big>萌</big><small></small></div>
+</div>
+<style>big { display: block; clear: both; margin-bottom: 5px }</style>
+<!--
+// access key
+// !@#$%^       i = ice
+// QWERTY       o = fire
+// ASDFGH       p = time
 // ZXCVBN
-// 123456   <space> = next
-// qwerty   <enter> = submit, cancel
+// 123456   space = next
+// qwerty   enter = submit, cancel
 // asdfgh
 // zxcvbn
 });
-</script>
+-->
