@@ -85,16 +85,16 @@ do doit = ->
     $ \.falling .removeClass \falling
     do-gravity!; doit!
 
+blacklist = {"": true}
 function pick (cur='')
   return "一二三四五六七八九十"[Math.floor(Math.random! * 10)] unless cur is /[^＊？]/
   return "＊" if Math.random! < 0.05
   return "？" if Math.random! < 0.2
   seen = {}
   scores = []
-  blacklist = {"": true}
   for c in (cur - /[＊？]/g)
     results = match-cache[c] ||= ALL.match(//[^"]*#c[^"]*//g)
-    for r in results | r.length <= 8
+    for r in results | r.length <= 8 and not blacklist[r]
       seen[r] ?= 0; score = ++seen[r]
       if r.length > (score + 1) => scores[score] ?= ""; scores[score] += "#r\n"
       else blacklist[r] = true

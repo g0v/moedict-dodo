@@ -3,7 +3,7 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, score, w, h, cs, draw, doGravity, doit;
+      var matchCache, score, w, h, cs, draw, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
       window.ALL = ALL;
@@ -145,8 +145,11 @@
           return doit();
         });
       })();
+      blacklist = {
+        "": true
+      };
       function pick(cur){
-        var seen, scores, blacklist, i$, ref$, len$, c, results, j$, len1$, r, score, cands, res$, ref1$, s, c2, picks, cand;
+        var seen, scores, i$, ref$, len$, c, results, j$, len1$, r, score, cands, res$, ref1$, s, c2, picks, cand;
         cur == null && (cur = '');
         if (!/[^＊？]/.test(cur)) {
           return "一二三四五六七八九十"[Math.floor(Math.random() * 10)];
@@ -159,15 +162,12 @@
         }
         seen = {};
         scores = [];
-        blacklist = {
-          "": true
-        };
         for (i$ = 0, len$ = (ref$ = replace$.call(cur, /[＊？]/g, '')).length; i$ < len$; ++i$) {
           c = ref$[i$];
           results = matchCache[c] || (matchCache[c] = ALL.match(RegExp('[^"]*' + c + '[^"]*', 'g')));
           for (j$ = 0, len1$ = results.length; j$ < len1$; ++j$) {
             r = results[j$];
-            if (r.length <= 8) {
+            if (r.length <= 8 && !blacklist[r]) {
               seen[r] == null && (seen[r] = 0);
               score = ++seen[r];
               if (r.length > score + 1) {
