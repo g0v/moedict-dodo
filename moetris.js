@@ -26,6 +26,12 @@
         var which, shiftKey, pos;
         which = arg$.which, shiftKey = arg$.shiftKey;
         switch (which) {
+        case 105:
+          return $('.ice.button').click();
+        case 111:
+          return $('.fire.button').click();
+        case 112:
+          return $('.time.button').click();
         case 32:
           return $('#wrap').click();
         default:

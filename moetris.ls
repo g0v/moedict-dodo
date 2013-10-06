@@ -32,7 +32,10 @@ $.fx.interval = 50ms
 
 $ document .on \keypress ({which, shiftKey}) ->
   switch which
-  | 32        => $ \#wrap .click!
+  | 105       => $ \.ice.button  .click!
+  | 111       => $ \.fire.button .click!
+  | 112       => $ \.time.button .click!
+  | 32        => $ \#wrap        .click!
   | otherwise => if ~keys.indexOf(which)
     pos = keyMap[which]
     select($ ".char.col-#{pos.x}" .eq pos.y)
