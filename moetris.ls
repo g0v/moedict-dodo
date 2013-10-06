@@ -6,22 +6,21 @@ window.ALL = ALL
 match-cache = {}
 
 keys = [
-  90, 88, 67, 86, 66, 78, # zxcvbn
-  65, 83, 68, 70, 71, 72, # asdfgh
-  81, 87, 69, 82, 84, 89, # qwerty
-  49, 50, 51, 52, 53, 54  # 123456
+  122, 120,  99, 118,  98, 110, # zxcvbn
+   97, 115, 100, 102, 103, 104, # asdfgh
+  113, 119, 101, 114, 116, 121, # qwerty
+   49,  50,  51,  52,  53,  54, # 123456
+   90,  88,  67,  86,  66,  78, # zxcvbn
+   65,  83,  68,  70,  71,  72, # asdfgh
+   81,  87,  69,  82,  84,  89, # qwerty
+   33,  64,  35,  36,  37,  94  # !@#$%^
 ]
 keyMap = {}
 keys.forEach (keyCode, idx) ->
-  x = ~~(idx % 6)
-  y = ~~(idx / 6)
   keyMap[keyCode] =
-    'false':
-      'x': x
-      'y': y
-    'true':
-      'x': x
-      'y': y + 4
+    'key': String.fromCharCode keyCode
+    'x': ~~(idx % 6)
+    'y': ~~(idx / 6)
 
 score = 0
 ice = fire = time = 0
@@ -31,11 +30,19 @@ h = 2 + $ \#proto .height!
 $('big').remove!
 $.fx.interval = 50ms
 
-$ document .on \keypress ({which}) -> $ \#wrap .click! if which is 32
+$ document .on \keypress ({which, shiftKey}) ->
+  switch which
+  | 105       => $ \.ice.button  .click!
+  | 111       => $ \.fire.button .click!
+  | 112       => $ \.time.button .click!
+  | 32        => $ \#wrap        .click!
+  | otherwise => if ~keys.indexOf(which)
+    pos = keyMap[which]
+    select($ ".char.col-#{pos.x}" .eq pos.y)
 
 cs = ''
 select = ->
-  c = it.text!
+  c = it.find \big .text!
   if it.hasClass \active
     if ~(idx = cs.lastIndexOf(c))
       it.removeClass "active red green"
@@ -46,9 +53,6 @@ select = ->
   draw cs
 $ \body .on \click \.char ->
   select $ @
-.on \keyup (e) -> if ~keys.indexOf(e.which)
-  pos = keyMap[e.which]?[e.shiftKey]
-  select($ '.char.col-' + pos.x .eq pos.y)
 
 $ \.ice.button .click ->
   return if $ \body .hasClass \frozen
@@ -60,7 +64,7 @@ $ \.fire.button .click ->
   for c from 0 to 5
     xs = $ ".col-#c:not(.falling)" .get!
     xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
-    $(xs.0).remove!
+    $(xs.0).detach!trigger \detached .remove!
   do-gravity!
 $ \.time.button .click ->
   return if time <= 0; $ \#time .text --time
@@ -101,7 +105,7 @@ $ \#wrap .css { width: \100% height: \100% } .click ->
     $ \#ice  .text <| ice += $ ".active .tint" .length
     $ \#fire .text <| fire += $ ".active .fire" .length
     $ \#time .text <| time += $ ".active .time" .length
-    $(\.active).remove!
+    $(\.active).detach!trigger \detached .remove!
     do-gravity!
     draw ''
   else
@@ -143,6 +147,14 @@ do doit = ->
   $x.css display: \inline-block position: \absolute left: col*w + 10
   $x.appendTo \body
   below = $ ".col-#col" .length
+  $access = $('<div/>' class: 'ui floating green access label').text(
+    keyMap[keys[col + (below - 1) * 6]]?.key
+  ).css('text-transform': \none)
+  $x.append $access
+  $x.on \detached, ->
+    $chars = $ ".col-#col"
+    $ ".col-#col > .access" .each (row, element) ->
+      $ element .text keyMap[keys[col + row * 6]]?.key
   if below > 8
     $ \.button .off \click
     return alert "Game over"
