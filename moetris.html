@@ -8,15 +8,15 @@
 <div class="access space">space</div>
 </div>
 <div id="special" class="ui buttons"  style="display: inline-block; position: absolute; top: -90px">
-  <div class="ui blue ice button" style="width: 33%">
+  <div class="ui blue ice disabled button" style="width: 33%" title="凍結畫面，直到下次送出">
     <i class="icon tint"></i><span id="ice">0</span>
     <div class="access">i</div>
   </div>
-  <div class="ui red fire button" style="width: 33%">
+  <div class="ui red fire disabled button" style="width: 33%" title="消掉最底下一列">
     <i class="icon fire"></i><span id="fire">0</span>
     <div class="access">o</div>
   </div>
-  <div class="ui black time button" style="width: 33%">
+  <div class="ui black time disabled button" style="width: 33%" title="暫停十秒鐘">
     <i class="icon time"></i><span id="time">0</span>
     <div class="access">p</div>
   </div>
@@ -35,7 +35,7 @@
     .char i { position: absolute; right: -5px; bottom: 5px}
     .char i.fire { color: #866 }
     .char i.tint { color: #688 }
-    .char i.time { color: #888 }
+    .char i.time { color: #666 }
 </style>
 <!--
 // access key

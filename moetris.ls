@@ -56,18 +56,18 @@ $ \body .on \click \.char ->
 
 $ \.ice.button .click ->
   return if $ \body .hasClass \frozen
-  return if ice <= 0; $ \#ice .text --ice
+  return if ice <= 0; $ \#ice .text --ice; $ \.ice.button .addClass \disabled unless ice
   $ \body .addClass \frozen
   $ \.falling .stop!
 $ \.fire.button .click ->
-  return if fire <= 0; $ \#fire .text --fire
+  return if fire <= 0; $ \#fire .text --fire; $ \.fire.button .addClass \disabled unless fire
   for c from 0 to 5
     xs = $ ".col-#c:not(.falling)" .get!
     xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
     $(xs.0).detach!trigger \detached .remove!
   do-gravity!
 $ \.time.button .click ->
-  return if time <= 0; $ \#time .text --time
+  return if time <= 0; $ \#time .text --time; $ \.time.button .addClass \disabled unless time
   return if $ \body .hasClass \paused
   $ \body .addClass \paused
   $ \.falling .stop!
@@ -105,6 +105,9 @@ $ \#wrap .css { width: \100% height: \100% } .click ->
     $ \#ice  .text <| ice += $ ".active .tint" .length
     $ \#fire .text <| fire += $ ".active .fire" .length
     $ \#time .text <| time += $ ".active .time" .length
+    $ \.ice.button  .removeClass \disabled if ice
+    $ \.fire.button .removeClass \disabled if fire
+    $ \.time.button .removeClass \disabled if time
     $(\.active).detach!trigger \detached .remove!
     do-gravity!
     draw ''
