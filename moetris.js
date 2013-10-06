@@ -3,12 +3,29 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, score, w, h, cs, draw, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, score, w, h, cs, select, draw, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
       window.ALL = ALL;
       matchCache = {};
       console.log(pick(''));
+      keys = [90, 88, 67, 86, 66, 78, 65, 83, 68, 70, 71, 72, 81, 87, 69, 82, 84, 89, 49, 50, 51, 52, 53, 54];
+      keyMap = {};
+      keys.forEach(function(keyCode, idx){
+        var x, y;
+        x = ~~(idx % 6);
+        y = ~~(idx / 6);
+        return keyMap[keyCode] = {
+          'false': {
+            'x': x,
+            'y': y
+          },
+          'true': {
+            'x': x,
+            'y': y + 4
+          }
+        };
+      });
       score = 0;
       w = 2 + $('#proto').width();
       h = 2 + $('#proto').height();
@@ -22,18 +39,28 @@
         }
       });
       cs = '';
-      $('body').on('click', '.char', function(){
+      select = function(it){
         var c, idx;
-        c = $(this).text();
-        if ($(this).hasClass('active')) {
-          if ((idx = cs.indexOf(c)) !== -1) {
-            $(this).removeClass("active red green");
+        c = it.text();
+        if (it.hasClass('active')) {
+          if (~(idx = cs.indexOf(c))) {
+            it.removeClass("active red green");
             draw(cs.substring(0, idx) + cs.substring(idx + 1));
           }
           return;
         }
-        $(this).addClass('active');
-        return draw(cs += c);
+        it.addClass('active');
+        cs += c;
+        return draw(cs);
+      };
+      $('body').on('click', '.char', function(){
+        return select($(this));
+      }).on('keyup', function(e){
+        var pos, ref$;
+        if (~keys.indexOf(e.which)) {
+          pos = (ref$ = keyMap[e.which]) != null ? ref$[e.shiftKey] : void 8;
+          return select($('.char.col-' + pos.x).eq(pos.y));
+        }
       });
       draw = function(it){
         var that;

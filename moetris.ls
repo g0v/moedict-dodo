@@ -6,6 +6,24 @@ window.ALL = ALL
 match-cache = {}
 console.log pick ''
 
+keys = [
+  90, 88, 67, 86, 66, 78, # zxcvbn
+  65, 83, 68, 70, 71, 72, # asdfgh
+  81, 87, 69, 82, 84, 89, # qwerty
+  49, 50, 51, 52, 53, 54  # 123456
+]
+keyMap = {}
+keys.forEach (keyCode, idx) ->
+  x = ~~(idx % 6)
+  y = ~~(idx / 6)
+  keyMap[keyCode] =
+    'false':
+      'x': x
+      'y': y
+    'true':
+      'x': x
+      'y': y + 4
+
 score = 0
 
 w = 2 + $ \#proto .width!
@@ -16,15 +34,21 @@ $.fx.interval = 50ms
 $ document .on \keypress ({which}) -> $ \#wrap .click! if which is 32
 
 cs = ''
-$ \body .on \click \.char ->
-  c = $(@).text!
-  if $(@).hasClass \active
-    if (idx = cs.indexOf c) isnt -1
-      $(@).removeClass "active red green"
-      draw cs.substring(0, idx) + cs.substring(idx + 1)
+select = ->
+  c = it.text!
+  if it.hasClass \active
+    if ~(idx = cs.indexOf(c))
+      it.removeClass "active red green"
+      draw(cs.substring(0, idx) + cs.substring(idx + 1))
     return
-  $(@).addClass \active
-  draw(cs += c)
+  it.addClass \active
+  cs += c
+  draw cs
+$ \body .on \click \.char ->
+  select $ @
+.on \keyup (e) -> if ~keys.indexOf(e.which)
+  pos = keyMap[e.which]?[e.shiftKey]
+  select($ '.char.col-' + pos.x .eq pos.y)
 
 draw = ->
   cs := it
