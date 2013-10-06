@@ -2,12 +2,11 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, keys, keyMap, score, w, h, cs, select, draw, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, score, ice, fire, time, w, h, cs, select, draw, resumeFalling, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
       window.ALL = ALL;
       matchCache = {};
-      console.log(pick(''));
       keys = [122, 120, 99, 118, 98, 110, 97, 115, 100, 102, 103, 104, 113, 119, 101, 114, 116, 121, 49, 50, 51, 52, 53, 54, 90, 88, 67, 86, 66, 78, 65, 83, 68, 70, 71, 72, 81, 87, 69, 82, 84, 89, 33, 64, 35, 36, 37, 94];
       keyMap = {};
       keys.forEach(function(keyCode, idx){
@@ -18,6 +17,7 @@
         };
       });
       score = 0;
+      ice = fire = time = 0;
       w = 2 + $('#proto').width();
       h = 2 + $('#proto').height();
       $('big').remove();
@@ -25,7 +25,6 @@
       $(document).on('keypress', function(arg$){
         var which, shiftKey, pos;
         which = arg$.which, shiftKey = arg$.shiftKey;
-        console.log(which);
         switch (which) {
         case 32:
           return $('#wrap').click();
@@ -39,7 +38,7 @@
       cs = '';
       select = function(it){
         var c, idx;
-        c = it.text();
+        c = it.find('big').text();
         if (it.hasClass('active')) {
           if (~(idx = cs.indexOf(c))) {
             it.removeClass("active red green");
@@ -53,6 +52,54 @@
       };
       $('body').on('click', '.char', function(){
         return select($(this));
+      });
+      $('.ice.button').click(function(){
+        if ($('body').hasClass('frozen')) {
+          return;
+        }
+        if (ice <= 0) {
+          return;
+        }
+        $('#ice').text(--ice);
+        $('body').addClass('frozen');
+        return $('.falling').stop();
+      });
+      $('.fire.button').click(function(){
+        var i$, c, xs;
+        if (fire <= 0) {
+          return;
+        }
+        $('#fire').text(--fire);
+        for (i$ = 0; i$ <= 5; ++i$) {
+          c = i$;
+          xs = $(".col-" + c + ":not(.falling)").get();
+          xs.sort(fn$);
+          $(xs[0]).remove();
+        }
+        return doGravity();
+        function fn$(a, b){
+          return $(b).css('top') - $(a).css('top');
+        }
+      });
+      $('.time.button').click(function(){
+        if (time <= 0) {
+          return;
+        }
+        $('#time').text(--time);
+        if ($('body').hasClass('paused')) {
+          return;
+        }
+        $('body').addClass('paused');
+        $('.falling').stop();
+        return $('#special').fadeOut({
+          duration: 10000,
+          easting: 'linear',
+          complete: function(){
+            $('#special').show();
+            $('body').removeClass('paused');
+            return resumeFalling();
+          }
+        });
       });
       draw = function(it){
         var that;
@@ -81,7 +128,13 @@
         left: '5px',
         width: 10 + 6 * w + "px",
         height: h + "px",
-        top: 9 * h
+        top: 20 + 9 * h
+      });
+      $('#special').css({
+        left: '5px',
+        width: 10 + 6 * w + "px",
+        height: h + "px",
+        top: 25
       });
       $('#wrap').css({
         width: '100%',
@@ -95,12 +148,40 @@
           score += $(this).text().length;
           $('#score').text(score);
           $(this).removeClass('active').removeClass('green');
-          $('.active').remove();
+          $('#ice').text(ice += $(".active .tint").length);
+          $('#fire').text(fire += $(".active .fire").length);
+          $('#time').text(time += $(".active .time").length);
+          $('.active').detach().trigger('detached').remove();
           doGravity();
-          return draw('');
+          draw('');
+        } else {
+          $('.falling').finish();
         }
-        return $('.falling').finish();
+        if ($('body').hasClass('frozen')) {
+          $('body').removeClass('frozen');
+          return resumeFalling();
+        }
       });
+      resumeFalling = function(){
+        var $x;
+        if ($('body').hasClass('frozen')) {
+          return;
+        }
+        if ($('body').hasClass('paused')) {
+          return;
+        }
+        $x = $('.falling');
+        if (!$x.length) {
+          return doit();
+        }
+        return $x.animate({
+          top: $x.data('top')
+        }, $x.data('speed'), 'linear', function(){
+          $('.falling').removeClass('falling');
+          doGravity();
+          return doit();
+        });
+      };
       doGravity = function(){
         var i$, c, lresult$, xs, below, j$, len$, x, top, results$ = [];
         for (i$ = 0; i$ <= 5; ++i$) {
@@ -112,13 +193,13 @@
           for (j$ = 0, len$ = xs.length; j$ < len$; ++j$) {
             x = xs[j$];
             below++;
-            top = 50 + (8 - below) * h;
+            top = 72 + (8 - below) * h;
             if (top === $(x).css('top')) {
               continue;
             }
             lresult$.push($(x).animate({
               top: top
-            }, 250, 'linear'));
+            }, 50, 'linear'));
           }
           results$.push(lresult$);
         }
@@ -128,7 +209,7 @@
         }
       };
       (doit = function(){
-        var min, i$, c, cnt, col, next, $x, below, $access, ref$;
+        var min, i$, c, cnt, col, next, special, $x, below, $access, ref$, top, speed;
         min = Infinity;
         for (i$ = 0; i$ <= 5; ++i$) {
           c = i$;
@@ -140,11 +221,16 @@
           col = c;
         }
         next = pick($('big').text());
+        if (Math.random() < 0.1) {
+          special = ['fire', 'tint', 'time'][Math.floor(Math.random() * 3)];
+        }
         $x = $('<div/>', {
           'class': "ui char button large col-" + col
         }).append($('<big/>').text(next).addClass(next === '？'
           ? 'qq'
-          : next === '＊' ? 'aa' : 'ww')).append($('<small/>').text());
+          : next === '＊' ? 'aa' : 'ww')).append($('<i/>', {
+          'class': "icon " + special
+        }));
         $x.css({
           display: 'inline-block',
           position: 'absolute',
@@ -152,22 +238,33 @@
         });
         $x.appendTo('body');
         below = $(".col-" + col).length;
-        if (below > 8) {
-          return alert("Game over");
-        }
         $access = $('<div/>', {
-          'class': 'ui attached label'
-        }).text(keyMap[keys[col + (below - 1) * 6]].key).css({
-          position: 'absolute',
-          top: 0,
-          right: 0,
+          'class': 'ui floating green access label'
+        }).text((ref$ = keyMap[keys[col + (below - 1) * 6]]) != null ? ref$.key : void 8).css({
           'text-transform': 'none'
         });
         $x.append($access);
+        $x.on('detached', function(){
+          var $chars;
+          $chars = $(".col-" + col);
+          return $(".col-" + col + " > .access").each(function(row, element){
+            var ref$;
+            return $(element).text((ref$ = keyMap[keys[col + row * 6]]) != null ? ref$.key : void 8);
+          });
+        });
+        if (below > 8) {
+          $('.button').off('click');
+          return alert("Game over");
+        }
         $x.addClass('falling');
-        return $x.animate({
-          top: 50 + (8 - below) * h
-        }, (9 - below) * (100 > (ref$ = 500 - score) ? 100 : ref$), 'linear', function(){
+        top = 72 + (8 - below) * h;
+        speed = (9 - below) * (100 > (ref$ = 500 - score) ? 100 : ref$);
+        return $x.data({
+          top: top,
+          speed: speed
+        }).animate({
+          top: top
+        }, speed, 'linear', function(){
           $('.falling').removeClass('falling');
           doGravity();
           return doit();
