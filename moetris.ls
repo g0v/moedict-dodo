@@ -2,6 +2,7 @@
 ALL <- $.get "https://www.moedict.tw/a/index.json" null, _, \text
 ALL -= /[；，]/g
 ALL -= /".",/g
+ALL -= /"[^"]*[\uD800-\uDBFF][^"]*"/g
 window.ALL = ALL
 match-cache = {}
 
