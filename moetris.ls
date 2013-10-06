@@ -7,22 +7,21 @@ match-cache = {}
 console.log pick ''
 
 keys = [
-  90, 88, 67, 86, 66, 78, # zxcvbn
-  65, 83, 68, 70, 71, 72, # asdfgh
-  81, 87, 69, 82, 84, 89, # qwerty
-  49, 50, 51, 52, 53, 54  # 123456
+  122, 120,  99, 118,  98, 110, # zxcvbn
+   97, 115, 100, 102, 103, 104, # asdfgh
+  113, 119, 101, 114, 116, 121, # qwerty
+   49,  50,  51,  52,  53,  54, # 123456
+   90,  88,  67,  86,  66,  78, # zxcvbn
+   65,  83,  68,  70,  71,  72, # asdfgh
+   81,  87,  69,  82,  84,  89, # qwerty
+   33,  64,  35,  36,  37,  94  # !@#$%^
 ]
 keyMap = {}
 keys.forEach (keyCode, idx) ->
-  x = ~~(idx % 6)
-  y = ~~(idx / 6)
   keyMap[keyCode] =
-    'false':
-      'x': x
-      'y': y
-    'true':
-      'x': x
-      'y': y + 4
+    'key': String.fromCharCode keyCode
+    'x': ~~(idx % 6)
+    'y': ~~(idx / 6)
 
 score = 0
 
@@ -31,7 +30,13 @@ h = 2 + $ \#proto .height!
 $('big').remove!
 $.fx.interval = 50ms
 
-$ document .on \keypress ({which}) -> $ \#wrap .click! if which is 32
+$ document .on \keypress ({which, shiftKey}) ->
+  console.log which
+  switch which
+  | 32        => $ \#wrap .click!
+  | otherwise => if ~keys.indexOf(which)
+    pos = keyMap[which]
+    select($ ".char.col-#{pos.x}" .eq pos.y)
 
 cs = ''
 select = ->
@@ -46,9 +51,6 @@ select = ->
   draw cs
 $ \body .on \click \.char ->
   select $ @
-.on \keyup (e) -> if ~keys.indexOf(e.which)
-  pos = keyMap[e.which]?[e.shiftKey]
-  select($ '.char.col-' + pos.x .eq pos.y)
 
 draw = ->
   cs := it
@@ -104,6 +106,15 @@ do doit = ->
   $x.appendTo \body
   below = $ ".col-#col" .length
   return alert "Game over"  if below > 8
+  $access = $('<div/>' class: 'ui attached label').text(
+    keyMap[keys[col + (below - 1) * 6]].key
+  ).css(
+    position: \absolute
+    top: 0
+    right: 0
+    'text-transform': \none
+  )
+  $x.append $access
   $x.addClass \falling
   $x.animate { top: 50 + (8 - below)*h }, (9 - below)*(100ms >? (500ms - score)), \linear, ->
     $ \.falling .removeClass \falling
