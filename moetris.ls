@@ -147,9 +147,9 @@ do doit = ->
   $x.css display: \inline-block position: \absolute left: col*w + 10
   $x.appendTo \body
   below = $ ".col-#col" .length
-  $access = $('<div/>' class: 'ui floating green access label').text(
+  $access = $('<div/>' class: 'access').text(
     keyMap[keys[col + (below - 1) * 6]]?.key
-  ).css('text-transform': \none)
+  )
   $x.append $access
   $x.on \detached, ->
     $chars = $ ".col-#col"

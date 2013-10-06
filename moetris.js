@@ -245,10 +245,8 @@
         $x.appendTo('body');
         below = $(".col-" + col).length;
         $access = $('<div/>', {
-          'class': 'ui floating green access label'
-        }).text((ref$ = keyMap[keys[col + (below - 1) * 6]]) != null ? ref$.key : void 8).css({
-          'text-transform': 'none'
-        });
+          'class': 'access'
+        }).text((ref$ = keyMap[keys[col + (below - 1) * 6]]) != null ? ref$.key : void 8);
         $x.append($access);
         $x.on('detached', function(){
           var $chars;
