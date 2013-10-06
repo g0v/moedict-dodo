@@ -6,6 +6,24 @@ window.ALL = ALL
 match-cache = {}
 console.log pick ''
 
+keys = [
+  90, 88, 67, 86, 66, 78, # zxcvbn
+  65, 83, 68, 70, 71, 72, # asdfgh
+  81, 87, 69, 82, 84, 89, # qwerty
+  49, 50, 51, 52, 53, 54  # 123456
+]
+keyMap = {}
+keys.forEach (keyCode, idx) ->
+  x = ~~(idx % 6)
+  y = ~~(idx / 6)
+  keyMap[keyCode] =
+    'false':
+      'x': x
+      'y': y
+    'true':
+      'x': x
+      'y': y + 4
+
 score = 0
 
 w = 2 + $ \#proto .width!
@@ -14,18 +32,24 @@ $('big').remove!
 $.fx.interval = 50ms
 
 cs = ''
-$ \body .on \click \.char ->
-  c = $(@).text!
-  if $(@).hasClass \active
+select = ->
+  c = it.text!
+  if it.hasClass \active
     if (idx = cs.indexOf c) isnt -1
-      $(@).removeClass \active
-      $(@).removeClass \red
-      $(@).removeClass \green
+      it.removeClass \active
+      it.removeClass \red
+      it.removeClass \green
       draw cs.substring(0, idx) + cs.substring(idx + 1)
     return
-  $(@).addClass \active
+  it.addClass \active
   cs += c
   draw cs
+$ \body .on \click \.char ->
+  select $ @
+.on \keyup (e) ->
+  if keys.indexOf e.which isnt -1
+    pos = keyMap[e.which][e.shiftKey]
+    select($ '.char.col-' + pos.x .eq pos.y)
 
 draw = ->
   cs := it
