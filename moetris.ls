@@ -13,45 +13,39 @@ h = 2 + $ \#proto .height!
 $('big').remove!
 $.fx.interval = 50ms
 
+$ document .on \keypress ({which}) -> $ \#wrap .click! if which is 32
+
 cs = ''
 $ \body .on \click \.char ->
   c = $(@).text!
   if $(@).hasClass \active
     if (idx = cs.indexOf c) isnt -1
-      $(@).removeClass \active
-      $(@).removeClass \red
-      $(@).removeClass \green
+      $(@).removeClass "active red green"
       draw cs.substring(0, idx) + cs.substring(idx + 1)
     return
   $(@).addClass \active
-  cs += c
-  draw cs
+  draw(cs += c)
 
 draw = ->
   cs := it
-  $(\#wrap).text cs
-  if cs.length
-    $(\#wrap).addClass \active
-  else
-    $(\#wrap).removeClass \active
-    $(\#wrap).removeClass \red
-    $(\#wrap).removeClass \green
-  return unless cs.length
-  if ~ALL.index-of("\"#cs\"")
-    $('.active').removeClass \red .addClass \green
+  $ \#wrap .text cs
+  return $ \#wrap .removeClass "active red green" unless cs.length
+  $ \#wrap .addClass \active
+  if ~ALL.index-of "\"#cs\""
+    return $ \.active .removeClass \red .addClass \green
+  if cs is /[＊？]/ and cs isnt /^[＊？]+$/ and ALL.match(//"(#{
+    cs.replace(/？/g '[^"]').replace(/＊/g '[^"]*')
+  })"//)
+    $ \#wrap .text that.1
+    $ \.active .removeClass \red .addClass \green
     return
-  else if cs is /[＊？]/ and cs isnt /^[＊？]+$/
-    if ALL.match(//"(#{ cs.replace(/？/g '[^"]').replace(/＊/g '[^"]*') })"//)
-      $ \#wrap .text that.1
-      $('.active').removeClass \red .addClass \green
-      return
-  $('.active').removeClass \green .addClass \red
+  $ \.active .removeClass \green .addClass \red
 
 $ \#top .css { left: \5px, width: (6*w) + "px", top: \5px }
 $ \#proto .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 9*h }
 $ \#wrap .css { width: \100% height: \100% } .click ->
   if $(@).hasClass \red
-    $(\.active).removeClass \active .removeClass \red
+    $ \.active .removeClass \active .removeClass \red
     return draw ''
   if $(@).hasClass \green
     score += $(@).text!length
@@ -60,32 +54,32 @@ $ \#wrap .css { width: \100% height: \100% } .click ->
     $(\.active).remove!
     do-gravity!
     return draw ''
-  $('.falling').finish()
+  $ \.falling .finish!
 
-do-gravity = ->
-  for c from 0 to 5
-    xs = $(".col-#c:not(.falling)").get!
-    xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
-    below = 0
-    for x in xs
-      below++
-      top = 50 + (8 - below)*h
-      continue if top == $(x).css \top
-      $(x).animate { top }, 250ms, \linear
+do-gravity = -> for c from 0 to 5
+  xs = $ ".col-#c:not(.falling)" .get!
+  xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
+  below = 0
+  for x in xs
+    below++
+    top = 50 + (8 - below)*h
+    continue if top == $(x).css \top
+    $(x).animate { top }, 250ms, \linear
 
 do doit = ->
-  col = 0
-  min = 9
+  min = Infinity
   for c from 0 to 5
     cnt = $(".col-#c").length
     continue if min <= cnt
     min = cnt; col = c
-  next = pick $("big").text!
-  $x = $('<div/>' class: "ui char button large col-#col").append($('<big/>').text(next)).append($('<small/>').text())
+  next = pick $(\big).text!
+  $x = $('<div/>' class: "ui char button large col-#col").append(
+    $('<big/>').text(next).addClass(if next is \？ then \qq else if next is \＊ then \aa else \ww)
+  ).append($('<small/>').text())
   $x.css display: \inline-block position: \absolute left: col*w + 10
   $x.appendTo \body
-  below = $(".col-#col").length
-  return alert("Game over") if below > 8
+  below = $ ".col-#col" .length
+  return alert "Game over"  if below > 8
   $x.addClass \falling
   $x.animate { top: 50 + (8 - below)*h }, (9 - below)*(100ms >? (500ms - score)), \linear, ->
     $ \.falling .removeClass \falling
