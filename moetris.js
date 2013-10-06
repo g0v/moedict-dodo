@@ -46,7 +46,7 @@
         if (~ALL.indexOf("\"" + cs + "\"")) {
           return $('.active').removeClass('red').addClass('green');
         }
-        if (that = /[＊？]/.exec(cs) && !/^[＊？]+$/.test(cs) && ALL.match(RegExp('"(' + cs.replace(/？/g, '[^"]').replace(/＊/g, '[^"]*') + ')"'))) {
+        if (that = /[＊？]/.exec(cs) && !/^[＊？]+$/.test(cs) && ALL.match(RegExp('"(' + cs.replace(/？/g, '[^"]').replace(/＊/g, '(?:[^"]+)?') + ')"'))) {
           $('#wrap').text(that[1]);
           $('.active').removeClass('red').addClass('green');
           return;

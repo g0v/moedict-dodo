@@ -34,7 +34,7 @@ draw = ->
   if ~ALL.index-of "\"#cs\""
     return $ \.active .removeClass \red .addClass \green
   if cs is /[＊？]/ and cs isnt /^[＊？]+$/ and ALL.match(//"(#{
-    cs.replace(/？/g '[^"]').replace(/＊/g '[^"]*')
+    cs.replace(/？/g '[^"]').replace(/＊/g '(?:[^"]+)?')
   })"//)
     $ \#wrap .text that.1
     $ \.active .removeClass \red .addClass \green
