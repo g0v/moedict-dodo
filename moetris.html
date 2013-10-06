@@ -6,10 +6,31 @@
 <div id="proto" style="display: inline-block; position: absolute; top: -90px">
 <div id="wrap" class="ui button large" style=""><big>萌</big><small></small></div>
 </div>
+<div id="special" class="ui buttons"  style="display: inline-block; position: absolute; top: -90px">
+  <div class="ui blue ice button" style="width: 33%"><i class="icon tint"></i><span id="ice">0</span></div>
+  <div class="ui red fire button" style="width: 33%"><i class="icon fire"></i><span id="fire">0</span></div>
+  <div class="ui black time button" style="width: 33%"><i class="icon time"></i><span id="time">0</span></div>
+</div>
 <style>
+    .frozen { background: #acc }
+    .paused { background: #aaa }
+    .frozen.paused { background: #8aa }
     big { display: block; clear: both; margin-bottom: 5px; color: #222; font-weight: normal }
     big.qq { color: #009 !important }
     big.aa { color: #a0a !important }
+    #special .button { font-family: 'Fira Sans', sans-serif }
+    .char i { position: absolute; right: -5px; bottom: 5px}
+    .char i.fire { color: #866 }
+    .char i.tint { color: #688 }
+    .char i.time { color: #888 }
+</style>
+<!--
+// access key
+// !@#$%^       i = ice
+// QWERTY       o = fire
+// ASDFGH       p = time
+// ZXCVBN
+// 123456   space = next
 </style>
 <!--
 // access key

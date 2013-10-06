@@ -3,12 +3,11 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, keys, keyMap, score, w, h, cs, select, draw, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, score, ice, fire, time, w, h, cs, select, draw, resumeFalling, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
       window.ALL = ALL;
       matchCache = {};
-      console.log(pick(''));
       keys = [90, 88, 67, 86, 66, 78, 65, 83, 68, 70, 71, 72, 81, 87, 69, 82, 84, 89, 49, 50, 51, 52, 53, 54];
       keyMap = {};
       keys.forEach(function(keyCode, idx){
@@ -27,6 +26,7 @@
         };
       });
       score = 0;
+      ice = fire = time = 0;
       w = 2 + $('#proto').width();
       h = 2 + $('#proto').height();
       $('big').remove();
@@ -62,6 +62,54 @@
           return select($('.char.col-' + pos.x).eq(pos.y));
         }
       });
+      $('.ice.button').click(function(){
+        if ($('body').hasClass('frozen')) {
+          return;
+        }
+        if (ice <= 0) {
+          return;
+        }
+        $('#ice').text(--ice);
+        $('body').addClass('frozen');
+        return $('.falling').stop();
+      });
+      $('.fire.button').click(function(){
+        var i$, c, xs;
+        if (fire <= 0) {
+          return;
+        }
+        $('#fire').text(--fire);
+        for (i$ = 0; i$ <= 5; ++i$) {
+          c = i$;
+          xs = $(".col-" + c + ":not(.falling)").get();
+          xs.sort(fn$);
+          $(xs[0]).remove();
+        }
+        return doGravity();
+        function fn$(a, b){
+          return $(b).css('top') - $(a).css('top');
+        }
+      });
+      $('.time.button').click(function(){
+        if (time <= 0) {
+          return;
+        }
+        $('#time').text(--time);
+        if ($('body').hasClass('paused')) {
+          return;
+        }
+        $('body').addClass('paused');
+        $('.falling').stop();
+        return $('#special').fadeOut({
+          duration: 10000,
+          easting: 'linear',
+          complete: function(){
+            $('#special').show();
+            $('body').removeClass('paused');
+            return resumeFalling();
+          }
+        });
+      });
       draw = function(it){
         var that;
         cs = it;
@@ -89,7 +137,13 @@
         left: '5px',
         width: 10 + 6 * w + "px",
         height: h + "px",
-        top: 9 * h
+        top: 20 + 9 * h
+      });
+      $('#special').css({
+        left: '5px',
+        width: 10 + 6 * w + "px",
+        height: h + "px",
+        top: 25
       });
       $('#wrap').css({
         width: '100%',
@@ -103,12 +157,40 @@
           score += $(this).text().length;
           $('#score').text(score);
           $(this).removeClass('active').removeClass('green');
+          $('#ice').text(ice += $(".active .tint").length);
+          $('#fire').text(fire += $(".active .fire").length);
+          $('#time').text(time += $(".active .time").length);
           $('.active').remove();
           doGravity();
-          return draw('');
+          draw('');
+        } else {
+          $('.falling').finish();
         }
-        return $('.falling').finish();
+        if ($('body').hasClass('frozen')) {
+          $('body').removeClass('frozen');
+          return resumeFalling();
+        }
       });
+      resumeFalling = function(){
+        var $x;
+        if ($('body').hasClass('frozen')) {
+          return;
+        }
+        if ($('body').hasClass('paused')) {
+          return;
+        }
+        $x = $('.falling');
+        if (!$x.length) {
+          return doit();
+        }
+        return $x.animate({
+          top: $x.data('top')
+        }, $x.data('speed'), 'linear', function(){
+          $('.falling').removeClass('falling');
+          doGravity();
+          return doit();
+        });
+      };
       doGravity = function(){
         var i$, c, lresult$, xs, below, j$, len$, x, top, results$ = [];
         for (i$ = 0; i$ <= 5; ++i$) {
@@ -120,13 +202,13 @@
           for (j$ = 0, len$ = xs.length; j$ < len$; ++j$) {
             x = xs[j$];
             below++;
-            top = 50 + (8 - below) * h;
+            top = 72 + (8 - below) * h;
             if (top === $(x).css('top')) {
               continue;
             }
             lresult$.push($(x).animate({
               top: top
-            }, 250, 'linear'));
+            }, 50, 'linear'));
           }
           results$.push(lresult$);
         }
@@ -136,7 +218,7 @@
         }
       };
       (doit = function(){
-        var min, i$, c, cnt, col, next, $x, below, ref$;
+        var min, i$, c, cnt, col, next, special, $x, below, top, speed, ref$;
         min = Infinity;
         for (i$ = 0; i$ <= 5; ++i$) {
           c = i$;
@@ -148,11 +230,14 @@
           col = c;
         }
         next = pick($('big').text());
+        special = ['fire', 'tint', 'time'][Math.floor(Math.random() * 3)];
         $x = $('<div/>', {
           'class': "ui char button large col-" + col
         }).append($('<big/>').text(next).addClass(next === '？'
           ? 'qq'
-          : next === '＊' ? 'aa' : 'ww')).append($('<small/>').text());
+          : next === '＊' ? 'aa' : 'ww')).append($('<i/>', {
+          'class': "icon " + special
+        }));
         $x.css({
           display: 'inline-block',
           position: 'absolute',
@@ -164,9 +249,14 @@
           return alert("Game over");
         }
         $x.addClass('falling');
-        return $x.animate({
-          top: 50 + (8 - below) * h
-        }, (9 - below) * (100 > (ref$ = 500 - score) ? 100 : ref$), 'linear', function(){
+        top = 72 + (8 - below) * h;
+        speed = (9 - below) * (100 > (ref$ = 500 - score) ? 100 : ref$);
+        return $x.data({
+          top: top,
+          speed: speed
+        }).animate({
+          top: top
+        }, speed, 'linear', function(){
           $('.falling').removeClass('falling');
           doGravity();
           return doit();
