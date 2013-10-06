@@ -17,11 +17,11 @@ cs = ''
 $ \body .on \click \.char ->
   c = $(@).text!
   if $(@).hasClass \active
-    if cs.substr(-1) is c
+    if (idx = cs.indexOf c) isnt -1
       $(@).removeClass \active
       $(@).removeClass \red
       $(@).removeClass \green
-      draw cs.substr(0, cs.length - 1)
+      draw cs.substring(0, idx) + cs.substring(idx + 1)
     return
   $(@).addClass \active
   cs += c
