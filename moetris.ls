@@ -143,7 +143,9 @@ do doit = ->
   $x.css display: \inline-block position: \absolute left: col*w + 10
   $x.appendTo \body
   below = $ ".col-#col" .length
-  return alert "Game over"  if below > 8
+  if below > 8
+    $ \.button .off \click
+    return alert "Game over"
   $x.addClass \falling
   top = 72 + (8 - below)*h
   speed = (9 - below) * (100ms >? (500ms - score))

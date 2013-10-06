@@ -248,6 +248,7 @@
         $x.appendTo('body');
         below = $(".col-" + col).length;
         if (below > 8) {
+          $('.button').off('click');
           return alert("Game over");
         }
         $x.addClass('falling');
