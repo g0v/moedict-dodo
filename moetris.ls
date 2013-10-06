@@ -61,7 +61,7 @@ $ \.fire.button .click ->
   for c from 0 to 5
     xs = $ ".col-#c:not(.falling)" .get!
     xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
-    $(xs.0).remove!
+    $(xs.0).detach!trigger \detached .remove!
   do-gravity!
 $ \.time.button .click ->
   return if time <= 0; $ \#time .text --time

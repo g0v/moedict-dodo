@@ -74,7 +74,7 @@
           c = i$;
           xs = $(".col-" + c + ":not(.falling)").get();
           xs.sort(fn$);
-          $(xs[0]).remove();
+          $(xs[0]).detach().trigger('detached').remove();
         }
         return doGravity();
         function fn$(a, b){
