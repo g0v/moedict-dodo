@@ -136,7 +136,7 @@ do doit = ->
     continue if min <= cnt
     min = cnt; col = c
   next = pick $(\big).text!
-  special = <[ fire tint time ]>[Math.floor (Math.random! * 3)]
+  special = <[ fire tint time ]>[Math.floor (Math.random! * 3)] if Math.random! < 0.1
   $x = $('<div/>' class: "ui char button large col-#col").append(
     $('<big/>').text(next).addClass(if next is \？ then \qq else if next is \＊ then \aa else \ww)
   ).append($('<i/>' class: "icon #special"))

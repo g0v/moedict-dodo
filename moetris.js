@@ -230,7 +230,9 @@
           col = c;
         }
         next = pick($('big').text());
-        special = ['fire', 'tint', 'time'][Math.floor(Math.random() * 3)];
+        if (Math.random() < 0.1) {
+          special = ['fire', 'tint', 'time'][Math.floor(Math.random() * 3)];
+        }
         $x = $('<div/>', {
           'class': "ui char button large col-" + col
         }).append($('<big/>').text(next).addClass(next === '？'
