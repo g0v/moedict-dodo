@@ -41,7 +41,7 @@ cs = ''
 select = ->
   c = it.find \big .text!
   if it.hasClass \active
-    if ~(idx = cs.indexOf(c))
+    if ~(idx = cs.lastIndexOf(c))
       it.removeClass "active red green"
       draw(cs.substring(0, idx) + cs.substring(idx + 1))
     return
