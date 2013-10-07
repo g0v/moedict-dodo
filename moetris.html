@@ -1,18 +1,40 @@
-<html><head><meta charset="utf8"><title>Moetris: 萌典方塊字</title>
+<html><head><meta charset="utf8">
+<title>Moetris: 萌典方塊遊戲</title>
+<meta property="og:image" content="https://moedict.tw/dodo/icon-down.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="360">
+<meta property="og:image:height" content="360">
+<meta property="og:description" content="這是萌典響應＜國語辭典啄木鳥＞活動架的網站。挑出的錯字在整理之後，會送回教育部訂正。">
+<meta name="description" content="這是萌典響應＜國語辭典啄木鳥＞活動架的網站。挑出的錯字在整理之後，會送回教育部訂正。">
 <meta name="viewport" content="width=486px, user-scalable=no">
 <link rel="stylesheet" type="text/css" class="ui" href="./css/semantic.min.css">
 <script src="./javascript/jquery-1.9.1.min.js"></script>
-<script src="./moetris.js"></script>
+<script src="./moetris.js?_=22c88562186daaf0837e210fc80e0af025cc79a8"></script>
+<link rel="shortcut icon" type="image/x-icon" href="favicon-down.ico" />
+<link rel="apple-touch-icon" href="icon-down.png" />
 </head><body>
 <div id="top" style="font-family: 'Fira Mono OT', monospace; position: absolute; top: -90px; text-align: right">Score: <span id="score">0</span></div>
 <div id="proto" style="display: inline-block; position: absolute; top: -90px">
-  <div id="wrap" class="ui button large" style="">
-    <big>萌</big><small></small>
+  <div id="wrap" class="ui green button large">
+    <i class="icon play"></i>開始遊戲
     <div class="access">space</div>
   </div>
 </div>
+<div id="help" class="ui blue message" style="display: block; position: absolute; top: 90px; left: 10px; width: 440px">
+    <ul class="ui list">
+        <li class="ui item">開始遊戲之後，單字會從上方落下。依序點選兩字以上的詞，底部組字區變綠時按下，即可消去選取的方塊。</li>
+        <li class="ui item">？代表任意字，＊代表任意一串字。</li>
+        <li class="ui item">消去特殊方塊<i class="icon tint"></i>、<i
+            class="icon fire"></i>、<i class="icon
+            time"></i>時，會增加上方按鈕的使用次數。</li>
+        <li class="ui item"><i class="icon
+            tint"></i>按鈕會凍結畫面直到組字完成。<br>
+        <i class="icon fire"></i>按鈕會消去最底下的一列。<br>
+        <i class="icon time"></i>按鈕會暫停畫面十秒鐘。</li>
+    </ul>
+</div>
 <div id="special" class="ui buttons"  style="display: inline-block; position: absolute; top: -90px">
-  <div class="ui blue ice disabled button" style="width: 33%" title="凍結畫面，直到下次送出">
+  <div class="ui blue ice disabled button" style="width: 33%" title="凍結畫面，直到下次送出組字">
     <i class="icon tint"></i><span id="ice">0</span>
     <div class="access">i</div>
   </div>
@@ -26,6 +48,8 @@
   </div>
 </div>
 <style>
+    ul { font-size: 24px }
+    li { margin-bottom: 24px !important }
     .frozen { background: #acc }
     .paused { background: #aaa }
     .frozen.paused { background: #8aa }
@@ -37,11 +61,11 @@
     .access { font-family: "Fira Sans OT", sans-serif !important; position: absolute; top: 5px; right: 5px; text-transform: none; font-weight: normal }
     .char i { position: absolute; right: -5px; bottom: 5px}
     .touch .access { display: none }
-    .char i.fire { color: #866 }
-    .char i.tint { color: #688 }
-    .char i.time { color: #666 }
-    #wrap.input { font-size: 22px }
-    #wrap.input, big { font-family: "Lantinghei TC", "黑體-繁", "微軟正黑體", "儷黑 Pro", "蘋果儷中黑", "Adobe 繁黑體 Std", "cwTex 明體", "Adobe 明體 Std", "PMingLiU", "MingLiU", sans-serif, "HanaMinA", "HanaMinB", "HAN NOM A", "HAN NOM B" }
+    .char i.fire, .item i.fire { color: #866 }
+    .char i.tint, .item i.tint { color: #688 }
+    .char i.time, .item i.time { color: #666 }
+    #wrap { font-size: 22px; font-weight: normal }
+    #wrap, big { font-family: "Lantinghei TC", "黑體-繁", "微軟正黑體", "儷黑 Pro", "蘋果儷中黑", "Adobe 繁黑體 Std", "cwTex 明體", "Adobe 明體 Std", "PMingLiU", "MingLiU", sans-serif, "HanaMinA", "HanaMinB", "HAN NOM A", "HAN NOM B" }
 </style>
 <!--
 // access key

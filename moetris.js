@@ -3,7 +3,7 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, keys, keyMap, score, ice, fire, time, w, h, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, score, ice, fire, time, w, h, tap, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
       ALL = replace$.call(ALL, /"[^"]*[\uD800-\uDBFF][^"]*"/g, '');
@@ -20,21 +20,22 @@
       });
       score = 0;
       ice = fire = time = 0;
-      w = 2 + $('#proto').width();
-      h = 2 + $('#proto').height();
+      w = 75;
+      h = 57;
       $('big').remove();
+      tap = IsTouchDevice ? 'touchstart' : 'click';
       $(document).on('keypress', function(arg$){
         var which, shiftKey, pos;
         which = arg$.which, shiftKey = arg$.shiftKey;
         switch (which) {
         case 105:
-          return $('.ice.button').click();
+          return $('.ice.button').trigger(tap);
         case 111:
-          return $('.fire.button').click();
+          return $('.fire.button').trigger(tap);
         case 112:
-          return $('.time.button').click();
+          return $('.time.button').trigger(tap);
         case 32:
-          return $('#wrap').click();
+          return $('#wrap').trigger(tap);
         default:
           if (~keys.indexOf(which)) {
             pos = keyMap[which];
@@ -67,11 +68,11 @@
           return select($(this));
         });
       } else {
-        $('body').on('click', '.char', function(){
+        $('body').on(tap, '.char', function(){
           return select($(this));
         });
       }
-      $('.ice.button').click(function(){
+      $('.ice.button').on(tap, function(){
         if ($('body').hasClass('frozen')) {
           return;
         }
@@ -85,7 +86,7 @@
         $('body').addClass('frozen');
         return $('.falling').stop();
       });
-      $('.fire.button').click(function(){
+      $('.fire.button').on(tap, function(){
         var i$, c, xs;
         if (fire <= 0) {
           return;
@@ -105,7 +106,7 @@
           return $(b).css('top') - $(a).css('top');
         }
       });
-      $('.time.button').click(function(){
+      $('.time.button').on(tap, function(){
         if (time <= 0) {
           return;
         }
@@ -147,11 +148,6 @@
         }
         return $('.active').removeClass('green').addClass('red');
       };
-      $.fn.vclick = IsTouchDevice
-        ? function(it){
-          return $(this).on('touchstart', it);
-        }
-        : $.fn.click;
       $('#top').css({
         left: '5px',
         width: 6 * w + "px",
@@ -172,7 +168,15 @@
       $('#wrap').css({
         width: '100%',
         height: '100%'
-      }).vclick(function(){
+      }).on(tap, function(){
+        if (!$('body').hasClass('started')) {
+          $('body').addClass('started');
+          $(this).removeClass('green');
+          $(this).text('');
+          $('#help').remove();
+          doit();
+          return;
+        }
         if ($(this).hasClass('red')) {
           $('.active').removeClass('active').removeClass('red');
           return draw('');
@@ -250,7 +254,7 @@
           return $(b).css('top') - $(a).css('top');
         }
       };
-      (doit = function(){
+      doit = function(){
         var min, i$, c, cnt, col, next, special, $x, below, $access, ref$, top, speed;
         min = Infinity;
         for (i$ = 0; i$ <= 5; ++i$) {
@@ -294,10 +298,10 @@
         });
         if (below > 8) {
           $('body').addClass('finished');
-          $('.button').off('click').off('touchstart');
+          $('.button').off(tap).off('touchstart');
           $('#wrap').addClass('secondary').text('再玩一次').prepend($('<i/>', {
             'class': "icon repeat"
-          })).click(function(){
+          })).on(tap, function(){
             return window.location = document.URL.replace(/#.*$/, '');
           });
           return;
@@ -315,7 +319,7 @@
           doGravity();
           return doit();
         });
-      })();
+      };
       blacklist = {
         "": true
       };

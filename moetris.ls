@@ -26,16 +26,17 @@ keys.forEach (keyCode, idx) ->
 score = 0
 ice = fire = time = 0
 
-w = 2 + $ \#proto .width!
-h = 2 + $ \#proto .height!
+w = 75
+h = 57
 $('big').remove!
 
+tap = if IsTouchDevice then \touchstart else \click
 $ document .on \keypress ({which, shiftKey}) ->
   switch which
-  | 105       => $ \.ice.button  .click!
-  | 111       => $ \.fire.button .click!
-  | 112       => $ \.time.button .click!
-  | 32        => $ \#wrap        .click!
+  | 105       => $ \.ice.button  .trigger tap
+  | 111       => $ \.fire.button .trigger tap
+  | 112       => $ \.time.button .trigger tap
+  | 32        => $ \#wrap        .trigger tap
   | otherwise => if ~keys.indexOf(which)
     pos = keyMap[which]
     select($ ".char.col-#{pos.x}" .eq pos.y)
@@ -60,21 +61,21 @@ if IsTouchDevice
   $ \body .addClass \touch
   $ \body .on \touchstart \.char -> select $ @
 else
-  $ \body .on \click \.char -> select $ @
+  $ \body .on tap, \.char -> select $ @
 
-$ \.ice.button .click ->
+$ \.ice.button .on tap, ->
   return if $ \body .hasClass \frozen
   return if ice <= 0; $ \#ice .text --ice; $ \.ice.button .addClass \disabled unless ice
   $ \body .addClass \frozen
   $ \.falling .stop!
-$ \.fire.button .click ->
+$ \.fire.button .on tap, ->
   return if fire <= 0; $ \#fire .text --fire; $ \.fire.button .addClass \disabled unless fire
   for c from 0 to 5
     xs = $ ".col-#c:not(.falling)" .get!
     xs.sort (a, b) -> $(b).css(\top) - $(a).css(\top)
     $(xs.0).detach!trigger \detached .remove!
   do-gravity!
-$ \.time.button .click ->
+$ \.time.button .on tap, ->
   return if time <= 0; $ \#time .text --time; $ \.time.button .addClass \disabled unless time
   return if $ \body .hasClass \paused
   $ \body .addClass \paused
@@ -100,11 +101,17 @@ draw = ->
     return
   $ \.active .removeClass \green .addClass \red
 
-$.fn.vclick = if IsTouchDevice then (-> $(@).on \touchstart it) else $.fn.click
 $ \#top .css { left: \5px, width: (6*w) + "px", top: \5px }
 $ \#proto .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 20+9*h }
 $ \#special .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 25 }
-$ \#wrap .css { width: \100% height: \100% } .vclick ->
+$ \#wrap .css { width: \100% height: \100% } .on tap, ->
+  unless $ \body .hasClass \started
+    $ \body .addClass \started
+    $(@) .removeClass \green
+    $(@) .text ''
+    $ \#help .remove!
+    doit!
+    return
   if $(@).hasClass \red
     $ \.active .removeClass \active .removeClass \red
     return draw ''
@@ -146,7 +153,7 @@ do-gravity = -> for c from 0 to 5
     continue if top == $(x).css \top
     $(x).animate { top }, 50ms, \linear
 
-do doit = ->
+doit = ->
   min = Infinity
   for c from 0 to 5
     cnt = $(".col-#c").length
@@ -170,8 +177,8 @@ do doit = ->
       $ element .text keyMap[keys[col + row * 6]]?.key
   if below > 8
     $ \body .addClass \finished
-    $ \.button .off \click .off \touchstart
-    $ \#wrap .addClass \secondary .text \再玩一次 .prepend $('<i/>' class: "icon repeat") .click ->
+    $ \.button .off tap .off \touchstart
+    $ \#wrap .addClass \secondary .text \再玩一次 .prepend $('<i/>' class: "icon repeat") .on tap, ->
       window.location = document.URL.replace(/#.*$/, '')
     return
   $x.addClass \falling
