@@ -3,10 +3,10 @@
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
     return $.get("https://www.moedict.tw/a/index.json", null, function(ALL){
-      var matchCache, keys, keyMap, score, ice, fire, time, w, h, cs, select, draw, resumeFalling, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, score, ice, fire, time, w, h, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
       ALL = replace$.call(ALL, /[；，]/g, '');
       ALL = replace$.call(ALL, /".",/g, '');
-      ALL = replace$.call(ALL, /"[^"]*[\uD800-\uDBFF][^"]*",/g, '');
+      ALL = replace$.call(ALL, /"[^"]*[\uD800-\uDBFF][^"]*"/g, '');
       window.ALL = ALL;
       matchCache = {};
       keys = [122, 120, 99, 118, 98, 110, 97, 115, 100, 102, 103, 104, 113, 119, 101, 114, 116, 121, 49, 50, 51, 52, 53, 54, 90, 88, 67, 86, 66, 78, 65, 83, 68, 70, 71, 72, 81, 87, 69, 82, 84, 89, 33, 64, 35, 36, 37, 94];
@@ -23,7 +23,6 @@
       w = 2 + $('#proto').width();
       h = 2 + $('#proto').height();
       $('big').remove();
-      $.fx.interval = 50;
       $(document).on('keypress', function(arg$){
         var which, shiftKey, pos;
         which = arg$.which, shiftKey = arg$.shiftKey;
@@ -46,6 +45,9 @@
       cs = '';
       select = function(it){
         var c, idx;
+        if ($('body').hasClass('finished')) {
+          return;
+        }
         c = it.find('big').text();
         if (it.hasClass('active')) {
           if (~(idx = cs.lastIndexOf(c))) {
@@ -58,9 +60,17 @@
         cs += c;
         return draw(cs);
       };
-      $('body').on('click', '.char', function(){
-        return select($(this));
-      });
+      IsTouchDevice = 'ontouchstart' in window || in$('onmsgesturechange', window);
+      if (IsTouchDevice) {
+        $('body').addClass('touch');
+        $('body').on('touchstart', '.char', function(){
+          return select($(this));
+        });
+      } else {
+        $('body').on('click', '.char', function(){
+          return select($(this));
+        });
+      }
       $('.ice.button').click(function(){
         if ($('body').hasClass('frozen')) {
           return;
@@ -122,6 +132,7 @@
         var that;
         cs = it;
         $('#wrap').text(cs);
+        $('#wrap').addClass('input');
         if (!cs.length) {
           return $('#wrap').removeClass("active red green");
         }
@@ -136,6 +147,11 @@
         }
         return $('.active').removeClass('green').addClass('red');
       };
+      $.fn.vclick = IsTouchDevice
+        ? function(it){
+          return $(this).on('touchstart', it);
+        }
+        : $.fn.click;
       $('#top').css({
         left: '5px',
         width: 6 * w + "px",
@@ -156,7 +172,7 @@
       $('#wrap').css({
         width: '100%',
         height: '100%'
-      }).click(function(){
+      }).vclick(function(){
         if ($(this).hasClass('red')) {
           $('.active').removeClass('active').removeClass('red');
           return draw('');
@@ -277,8 +293,14 @@
           });
         });
         if (below > 8) {
-          $('.button').off('click');
-          return alert("Game over");
+          $('body').addClass('finished');
+          $('.button').off('click').off('touchstart');
+          $('#wrap').addClass('secondary').text('再玩一次').prepend($('<i/>', {
+            'class': "icon repeat"
+          })).click(function(){
+            return window.location = document.URL.replace(/#.*$/, '');
+          });
+          return;
         }
         $x.addClass('falling');
         top = 72 + (8 - below) * h;
@@ -367,4 +389,9 @@
       return pick;
     }, 'text');
   });
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
+  }
 }).call(this);

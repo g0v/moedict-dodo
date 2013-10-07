@@ -29,7 +29,6 @@ ice = fire = time = 0
 w = 2 + $ \#proto .width!
 h = 2 + $ \#proto .height!
 $('big').remove!
-$.fx.interval = 50ms
 
 $ document .on \keypress ({which, shiftKey}) ->
   switch which
@@ -43,6 +42,7 @@ $ document .on \keypress ({which, shiftKey}) ->
 
 cs = ''
 select = ->
+  return if $ \body .hasClass \finished
   c = it.find \big .text!
   if it.hasClass \active
     if ~(idx = cs.lastIndexOf(c))
@@ -52,8 +52,15 @@ select = ->
   it.addClass \active
   cs += c
   draw cs
-$ \body .on \click \.char ->
-  select $ @
+
+IsTouchDevice = \ontouchstart of window
+             || \onmsgesturechange in window
+
+if IsTouchDevice
+  $ \body .addClass \touch
+  $ \body .on \touchstart \.char -> select $ @
+else
+  $ \body .on \click \.char -> select $ @
 
 $ \.ice.button .click ->
   return if $ \body .hasClass \frozen
@@ -80,6 +87,7 @@ $ \.time.button .click ->
 draw = ->
   cs := it
   $ \#wrap .text cs
+  $ \#wrap .addClass \input
   return $ \#wrap .removeClass "active red green" unless cs.length
   $ \#wrap .addClass \active
   if ~ALL.index-of "\"#cs\""
@@ -92,10 +100,11 @@ draw = ->
     return
   $ \.active .removeClass \green .addClass \red
 
+$.fn.vclick = if IsTouchDevice then (-> $(@).on \touchstart it) else $.fn.click
 $ \#top .css { left: \5px, width: (6*w) + "px", top: \5px }
 $ \#proto .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 20+9*h }
 $ \#special .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 25 }
-$ \#wrap .css { width: \100% height: \100% } .click ->
+$ \#wrap .css { width: \100% height: \100% } .vclick ->
   if $(@).hasClass \red
     $ \.active .removeClass \active .removeClass \red
     return draw ''
@@ -160,8 +169,11 @@ do doit = ->
     $ ".col-#col > .access" .each (row, element) ->
       $ element .text keyMap[keys[col + row * 6]]?.key
   if below > 8
-    $ \.button .off \click
-    return alert "Game over"
+    $ \body .addClass \finished
+    $ \.button .off \click .off \touchstart
+    $ \#wrap .addClass \secondary .text \再玩一次 .prepend $('<i/>' class: "icon repeat") .click ->
+      window.location = document.URL.replace(/#.*$/, '')
+    return
   $x.addClass \falling
   top = 72 + (8 - below)*h
   speed = (9 - below) * (100ms >? (500ms - score))
