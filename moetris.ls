@@ -31,7 +31,7 @@ h = 57
 $('big').remove!
 
 tap = if IsTouchDevice then \touchstart else \click
-$ document .on \keypress ({which, shiftKey}) ->
+$ document .on \keypress ({which}) ->
   switch which
   | 105       => $ \.ice.button  .trigger tap
   | 111       => $ \.fire.button .trigger tap

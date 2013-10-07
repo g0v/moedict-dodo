@@ -24,8 +24,8 @@
       $('big').remove();
       tap = IsTouchDevice ? 'touchstart' : 'click';
       $(document).on('keypress', function(arg$){
-        var which, shiftKey, pos;
-        which = arg$.which, shiftKey = arg$.shiftKey;
+        var which, pos;
+        which = arg$.which;
         switch (which) {
         case 105:
           return $('.ice.button').trigger(tap);
