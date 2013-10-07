@@ -31,7 +31,7 @@ h = 57
 $('big').remove!
 
 tap = if IsTouchDevice then \touchstart else \click
-$ document .on \keypress ({which, shiftKey}) ->
+$ document .on \keypress ({which}) ->
   switch which
   | 105       => $ \.ice.button  .trigger tap
   | 111       => $ \.fire.button .trigger tap
@@ -87,7 +87,7 @@ $ \.time.button .on tap, ->
 
 draw = ->
   cs := it
-  $ \#wrap .text cs
+  $ \#msg .text cs
   $ \#wrap .addClass \input
   return $ \#wrap .removeClass "active red green" unless cs.length
   $ \#wrap .addClass \active
@@ -96,7 +96,7 @@ draw = ->
   if cs is /[＊？]/ and cs isnt /^[＊？]+$/ and ALL.match(//"(#{
     cs.replace(/？/g '[^"]').replace(/＊/g '(?:[^"]+)?')
   })"//)
-    $ \#wrap .text that.1
+    $ \#msg .text that.1
     $ \.active .removeClass \red .addClass \green
     return
   $ \.active .removeClass \green .addClass \red
@@ -108,7 +108,7 @@ $ \#wrap .css { width: \100% height: \100% } .on tap, ->
   unless $ \body .hasClass \started
     $ \body .addClass \started
     $(@) .removeClass \green
-    $(@) .text ''
+    $ \#msg .text ''
     $ \#help .remove!
     doit!
     return
@@ -178,7 +178,8 @@ doit = ->
   if below > 8
     $ \body .addClass \finished
     $ \.button .off tap .off \touchstart
-    $ \#wrap .addClass \secondary .text \再玩一次 .prepend $('<i/>' class: "icon repeat") .on tap, ->
+    $ \#msg .text \再玩一次 .prepend $('<i/>' class: "icon repeat")
+    $ \#wrap .addClass \secondary .on tap, ->
       window.location = document.URL.replace(/#.*$/, '')
     return
   $x.addClass \falling
