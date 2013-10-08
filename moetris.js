@@ -2,7 +2,12 @@
 (function(){
   var replace$ = ''.replace, split$ = ''.split;
   $(function(){
-    return $.get("moetris.txt", null, function(ALL){
+    var corpus;
+    corpus = "moetris.txt";
+    if (/^#[ht]/.exec(location.hash)) {
+      corpus = "moetris." + location.hash.substr(1, 1) + ".txt";
+    }
+    return $.get(corpus, null, function(ALL){
       var matchCache, keys, keyMap, score, ice, fire, time, w, h, tap, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
       window.ALL = ALL;
       matchCache = {};
@@ -299,7 +304,7 @@
             'class': "icon repeat"
           }));
           $('#wrap').addClass('secondary').on(tap, function(){
-            return window.location = document.URL.replace(/#.*$/, '');
+            return location.reload();
           });
           return;
         }

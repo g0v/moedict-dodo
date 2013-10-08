@@ -1,5 +1,9 @@
 <- $
-ALL <- $.get "moetris.txt" null, _, \text
+
+corpus = "moetris.txt"
+corpus = "moetris.#{ location.hash.substr(1, 1) }.txt" if location.hash is /^#[ht]/
+
+ALL <- $.get corpus, null, _, \text
 #ALL -= /[；，]/g
 #ALL -= /".",/g
 #ALL -= /"[^"]*[\uD800-\uDBFF][^"]*"/g
@@ -180,8 +184,7 @@ doit = ->
     $ \body .addClass \finished
     $ \.button .off tap .off \touchstart
     $ \#msg .text \再玩一次 .prepend $('<i/>' class: "icon repeat")
-    $ \#wrap .addClass \secondary .on tap, ->
-      window.location = document.URL.replace(/#.*$/, '')
+    $ \#wrap .addClass \secondary .on tap, -> location.reload!
     return
   $x.addClass \falling
   top = 72 + (8 - below)*h
