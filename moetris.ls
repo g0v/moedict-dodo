@@ -193,7 +193,7 @@ doit = ->
 blacklist = {"": true}
 function pick (cur='')
   # Freq list from: http://www.edu.tw/files/site_content/m0001/pin/biau1.htm
-  return "的不一我是人有了大國來生在子們中上他時小地出以學可自這會成家到為天心年然要得說過個著能下動發臺麼車那行經去好開現就作後多方如事公看也長面力起裡高用業你因而分市於道外沒無同法前水電民對兒日之文當教新意情所實工全定美理頭本明氣進樣都主間老想重體山物知手相回性果政只此代和活媽親化加影什身己灣機部常見其正世"[Math.floor(Math.random! * 150)] unless cur is /[^＊？]/
+  return "萌的不一我是人有了大國來生在子們中上他時小地出以學可自這會成家到為天心年然要得說過個著能下動發臺麼車那行經去好開現就作後多方如事公看也長面力起裡高用業你因而分市於道外沒無同法前水電民對兒日之文當教新意情所實工全定美理頭本明氣進樣都主間老想重體山物知手相回性果政只此代和活親化加影什身己灣機部常見其正世"[Math.floor(Math.random! * 150)] unless cur is /[^＊？]/
   return "＊" if Math.random! < 0.05
   return "？" if Math.random! < 0.2
   seen = {}
