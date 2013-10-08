@@ -1,8 +1,8 @@
 <- $
-ALL <- $.get "https://www.moedict.tw/a/index.json" null, _, \text
-ALL -= /[；，]/g
-ALL -= /".",/g
-ALL -= /"[^"]*[\uD800-\uDBFF][^"]*"/g
+ALL <- $.get "moetris.txt" null, _, \text
+#ALL -= /[；，]/g
+#ALL -= /".",/g
+#ALL -= /"[^"]*[\uD800-\uDBFF][^"]*"/g
 window.ALL = ALL
 match-cache = {}
 
@@ -104,7 +104,8 @@ draw = ->
 $ \#top .css { left: \5px, width: (6*w) + "px", top: \5px }
 $ \#proto .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 20+9*h }
 $ \#special .css { left: \5px, width: 10 + (6*w) + "px", height: h + "px", top: 25 }
-$ \#wrap .css { width: \100% height: \100% } .on tap, ->
+$ \#msg .show!; $ \.icon.loading .remove!
+$ \#wrap .removeClass \red .addClass \green .on tap, ->
   unless $ \body .hasClass \started
     $ \body .addClass \started
     $(@) .removeClass \green
@@ -191,7 +192,8 @@ doit = ->
 
 blacklist = {"": true}
 function pick (cur='')
-  return "一二三四五六七八九十"[Math.floor(Math.random! * 10)] unless cur is /[^＊？]/
+  # Freq list from: http://www.edu.tw/files/site_content/m0001/pin/biau1.htm
+  return "的不一我是人有了大國來生在子們中上他時小地出以學可自這會成家到為天心年然要得說過個著能下動發臺麼車那行經去好開現就作後多方如事公看也長面力起裡高用業你因而分市於道外沒無同法前水電民對兒日之文當教新意情所實工全定美理頭本明氣進樣都主間老想重體山物知手相回性果政只此代和活媽親化加影什身己灣機部常見其正世"[Math.floor(Math.random! * 150)] unless cur is /[^＊？]/
   return "＊" if Math.random! < 0.05
   return "？" if Math.random! < 0.2
   seen = {}
@@ -202,7 +204,7 @@ function pick (cur='')
       seen[r] ?= 0; score = ++seen[r]
       if r.length > (score + 1) => scores[score] ?= ""; scores[score] += "#r\n"
       else blacklist[r] = true
-  cands = []; until cands?length => cands = [ s for s in (scores.pop! ? '') / "\n" | not blacklist[s] ]
+  cands = []; until cands?length or !scores.length => cands = [ s for s in (scores.pop! ? '') / "\n" | not blacklist[s] ]
   while cands.length <= 5 and scores.length
     c2 = []; until c2?length or !scores.length => c2 = [ s for s in (scores.pop! ? '') / "\n" | not blacklist[s] ]
     cands ++= c2
@@ -210,4 +212,5 @@ function pick (cur='')
   for cand in cands
     for c in cur - /[＊？]/g => cand -= //#c//
     picks += cand
+  return pick! unless picks
   return picks[Math.floor Math.random! * picks.length]
