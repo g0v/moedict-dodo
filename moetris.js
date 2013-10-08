@@ -8,18 +8,20 @@
       corpus = "moetris." + location.hash.substr(1, 1) + ".txt";
     }
     return $.get(corpus, null, function(ALL){
-      var matchCache, keys, keyMap, score, ice, fire, time, w, h, tap, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
+      var matchCache, keys, keyMap, i$, len$, idx, keyCode, score, ice, fire, time, w, h, tap, cs, select, IsTouchDevice, draw, resumeFalling, doGravity, doit, blacklist;
       window.ALL = ALL;
       matchCache = {};
       keys = [122, 120, 99, 118, 98, 110, 97, 115, 100, 102, 103, 104, 113, 119, 101, 114, 116, 121, 49, 50, 51, 52, 53, 54, 90, 88, 67, 86, 66, 78, 65, 83, 68, 70, 71, 72, 81, 87, 69, 82, 84, 89, 33, 64, 35, 36, 37, 94];
       keyMap = {};
-      keys.forEach(function(keyCode, idx){
-        return keyMap[keyCode] = {
+      for (i$ = 0, len$ = keys.length; i$ < len$; ++i$) {
+        idx = i$;
+        keyCode = keys[i$];
+        keyMap[keyCode] = {
           'key': String.fromCharCode(keyCode),
           'x': ~~(idx % 6),
           'y': ~~(idx / 6)
         };
-      });
+      }
       score = 0;
       ice = fire = time = 0;
       w = 75;

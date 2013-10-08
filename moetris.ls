@@ -21,7 +21,7 @@ keys = [
    33,  64,  35,  36,  37,  94  # !@#$%^
 ]
 keyMap = {}
-keys.forEach (keyCode, idx) ->
+for keyCode, idx in keys
   keyMap[keyCode] =
     'key': String.fromCharCode keyCode
     'x': ~~(idx % 6)
