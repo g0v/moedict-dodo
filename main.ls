@@ -108,9 +108,9 @@ function refresh (fixed-idx)
   [book, x-key, x, y-key, y, idx] = pick-item(fixed-idx)  / '\n'
   key := "#x-key,#y-key"
   if not fixed-idx and ~window.seen.indexOf "\n#key,"
-    # Reroll with 95% certainty if it's judged before
+    # Reroll with 99% certainty if it's judged before
     # Reroll with 75% certainty if it's passed before
-    factor = if window.seen is //\n#key,[xyz]// then 4 else 20
+    factor = if window.seen is //\n#key,[xyz]// then 100 else 4
     return refresh! if Math.floor(Math.random! * factor)
   $ \#book .text book
   $ \#x .html x.replace(/`/g, \<b>).replace(/~/g, \</b>)

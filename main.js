@@ -180,7 +180,7 @@
       ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
       if (!fixedIdx && ~window.seen.indexOf("\n" + key + ",")) {
-        factor = RegExp('\\n' + key + ',[xyz]').exec(window.seen) ? 4 : 20;
+        factor = RegExp('\\n' + key + ',[xyz]').exec(window.seen) ? 100 : 4;
         if (Math.floor(Math.random() * factor)) {
           return refresh();
         }
