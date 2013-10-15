@@ -136,9 +136,11 @@
       if (window.total < items.length) {
         percent = Math.floor(window.total / items.length * 1000) / 10;
         text = "第一階段「初校」。目前進度：" + window.total + " / " + items.length + " (" + percent + "%)";
-      } else {
+      } else if (window.unique < items.length) {
         percent = Math.floor(window.unique / items.length * 1000) / 10;
         text = "第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)";
+      } else if (window.unique < items.length) {
+        text = "所有的源資料和備註都已寄送至教育部，非常感謝大家熱心參與！";
       }
       $('#total-bar').css('width', percent + "%");
       if ($('#total-text').text()) {
@@ -176,15 +178,16 @@
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){
-      var ref$, book, xKey, x, yKey, y, idx, factor, comma, i$, len$, chunk;
+      var ref$, book, xKey, x, yKey, y, idx, comma, i$, len$, chunk;
       ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
-      if (!fixedIdx && ~window.seen.indexOf("\n" + key + ",")) {
-        factor = RegExp('\\n' + key + ',[xyz]').exec(window.seen) ? 100 : 4;
-        if (Math.floor(Math.random() * factor)) {
-          return refresh();
-        }
-      }
+      /*
+      if not fixed-idx and ~window.seen.indexOf "\n#key,"
+        # Reroll with 99% certainty if it's judged before
+        # Reroll with 75% certainty if it's passed before
+        factor = if window.seen is //\n#key,[xyz]// then 100 else 4
+        return refresh! if Math.floor(Math.random! * factor)
+      */
       $('#book').text(book);
       $('#x').html(x.replace(/`/g, '<b>').replace(/~/g, '</b>'));
       $('#y').html(y.replace(/`/g, '<b>').replace(/~/g, '</b>'));
