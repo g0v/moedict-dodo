@@ -141,7 +141,7 @@
         text = "第二階段「交叉比對」。目前進度：" + window.unique + " / " + items.length + " (" + percent + "%)";
       } else {
         percent = 100;
-        text = "所有的源資料和備註都已寄送至教育部，非常感謝大家熱心參與！";
+        text = "所有的源資料和備註都已寄送至教育部，非常感謝大家熱心參與！(1990/1990)";
       }
       $('#total-bar').css('width', percent + "%");
       if ($('#total-text').text()) {
