@@ -1,7 +1,7 @@
 <- $
 
 corpus = "moetris.txt"
-corpus = "moetris.#{ location.hash.substr(1, 1) }.txt" if location.hash is /^#[ht]/
+corpus = "moetris.#{ location.hash.substr(1, 1) }.txt" if location.hash is /^#[htpb]/
 
 ALL <- $.get corpus, null, _, \text
 #ALL -= /[；，]/g
@@ -89,18 +89,28 @@ $ \.time.button .on tap, ->
     $ \body .removeClass \paused
     resume-falling!
 
+o = -> (it / '').sort!.join('')
+
 draw = ->
   cs := it
   $ \#msg .text cs
   $ \#wrap .addClass \input
   return $ \#wrap .removeClass "active red green" unless cs.length
   $ \#wrap .addClass \active
-  if ~ALL.index-of "\"#cs\""
+  if location.hash is \#p
+    cs := o cs
+
+  if location.hash in <[ #p #b ]>
+    if ALL.match(//("#cs":\S+)//)
+      $ \#msg .text(that.1)
+      $ \.active .removeClass \red .addClass \green
+      return
+  else if ~ALL.index-of "\"#cs\""
     return $ \.active .removeClass \red .addClass \green
   if cs is /[＊？]/ and cs isnt /^[＊？]+$/ and ALL.match(//"(#{
     cs.replace(/？/g '[^"]').replace(/＊/g '(?:[^"]+)?')
-  })"//)
-    $ \#msg .text that.1
+  })"(:\S+)?//)
+    $ \#msg .text(that.1 + (that.2 ? ''))
     $ \.active .removeClass \red .addClass \green
     return
   $ \.active .removeClass \green .addClass \red
@@ -196,6 +206,8 @@ doit = ->
 blacklist = {"": true}
 function pick (cur='')
   # Freq list from: http://www.edu.tw/files/site_content/m0001/pin/biau1.htm
+  return "ㄅㄆㄇ"[Math.floor(Math.random! * 3)] unless cur is /[^＊？]/ or location.hash isnt \#b
+  return "一丁之"[Math.floor(Math.random! * 3)] unless cur is /[^＊？]/ or location.hash isnt \#p
   return "萌的不一我是人有了大國來生在子們中上他時小地出以學可自這會成家到為天心年然要得說過個著能下動發臺麼車那行經去好開現就作後多方如事公看也長面力起裡高用業你因而分市於道外沒無同法前水電民對兒日之文當教新意情所實工全定美理頭本明氣進樣都主間老想重體山物知手相回性果政只此代和活親化加影什身己灣機部常見其正世"[Math.floor(Math.random! * 150)] unless cur is /[^＊？]/
   return "＊" if Math.random! < 0.05
   return "？" if Math.random! < 0.2
