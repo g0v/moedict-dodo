@@ -11,7 +11,6 @@
 
 </head>
 
-
 <body>
 
 <script type="text/javascript">
@@ -22,7 +21,7 @@
 	var card = "雙面"; var mode = "閃卡模式";
 	var faceBack = "漢英";     // var face = "漢"; var back = "英";
 
-	var indexM;
+	var indexM; // 之後還可加上用location.hash來給字庫的功能
 
 	$.getJSON("https://www.moedict.tw/a/index.json", function(x) {indexM = x});
 
