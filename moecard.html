@@ -17,6 +17,7 @@
 	var bottonFunNow, objNow;
 	var enterLock = 1; var flipped = 0;
 	var ansBig = '<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div><div></div>';
+	var ansQuerry = [ansBig];
 	var start = 0; var faceNow = 0;
 	var card = "雙面"; var mode = "閃卡模式";
 	var faceBack = "漢英";     // var face = "漢"; var back = "英";
@@ -34,8 +35,10 @@
 	}
 	
 	function catchData (data, data2) {
-		ansBig = "<div><a href = "+"'https://www.moedict.tw/#"+data+"' target = 'new'>"+data+"</a></div>";
-		if (data2) ansBig += "<hr><div><font color = 'darkgreen'>"+data2+"</font></div>";
+		var ansNew = "<div><a href = "+"'https://www.moedict.tw/#"+data+"' target = 'new'>"+data+"</a></div>";
+		if (data2) ansNew += "<hr><div><font color = 'darkgreen'>"+data2+"</font></div>";
+
+		ansQuerry.push(ansNew);   //		alert(ansQuerry);
 	}
 
 	function innerBig () {
@@ -43,12 +46,25 @@
 			return;
 		}
 		else {
-			document.getElementById('bigans').innerHTML = ansBig;
+
 			if (card == "單面") {
+				if (ansQuerry[0]) document.getElementById('bigans').innerHTML = ansQuerry[0];
+				else {
+					document.getElementById('bigans').innerHTML ="<div class = 'cyan'>讀取中...請在3秒後再按一次Enter</div>";
+				}
+
 				$('#bigans').show();
+
 				if (faceNow == 0) {document.getElementById('bigans').getElementsByTagName("div")[1].style.display = "none"};
 				if (faceNow == 1) {document.getElementById('bigans').getElementsByTagName("div")[0].style.display = "none"};
 			}
+			else {
+				if (ansQuerry[0]) document.getElementById('bigans').innerHTML = ansQuerry.shift();
+				else {
+					document.getElementById('bigans').innerHTML ="<div class = 'cyan'>萌典讀取中...請3秒後再按一次Enter</div>";
+				}
+			}			
+
 		}
 	}
 
@@ -61,24 +77,12 @@
 			enterLock = 0; // unlock Enter
 			return;};
 
-		enterLock = 1; // lock Enter
+//		enterLock = 1; // lock Enter
 
 		var newSrc = $("#source").val();
-
-//		if (newSrc.substr(0,1) == '[') {
-//			indexCore = eval(newSrc);
-//		}
-//		if (newSrc.split('json')) {
-//			$.getJSON(newSrc, function(x) {indexCore = x});	
-//		};	
-
 		var wordNow = pickone(indexM); //indexCore
-
 		var wordNowD = decodeURIComponent(wordNow.replace(/\+/g,  " ")); // 國字
 
-//		$.getJSON("https://www.moedict.tw/a/index.json", function(x){
-//      var wordNow = pickone(x);  
-//		var wordNowD = decodeURIComponent(wordNow.replace(/\+/g,  " ")); // 國字
 		console.log(wordNowD);
         
         $.getJSON("https://www.moedict.tw/a/"+wordNowD+".json", function(x){
@@ -108,7 +112,7 @@
 		        	case "漢英": catchData(wordNowD, enWord); break;
 			        	case "英漢": catchData(enWord, wordNowD); break;
 			        }
-	        		enterLock = 0; // unlock Enter
+//	        		enterLock = 0; // unlock Enter
         	}
 	        catch (err) {
 	        	console.log(err+"____條目「"+wordNowD+"」暫無英文翻譯");
@@ -121,14 +125,14 @@
 
 	function showAndCore (obj) {   // 預先讀好下次要顯示的資料，使用者按鍵時就不用等
 
-
 		innerBig();	faceNow++;
 
 		if (card != "單面" || faceNow == 2) {
-			core(obj);
+			core(obj);core(obj);
+			if (faceNow == 2) ansQuerry.shift();
 			faceNow = 0;
 		}
-		enterLock = 0; // unlock Enter
+//		enterLock = 0; // unlock Enter
 
 	}
 
@@ -140,8 +144,10 @@
 		if (window.event) keycode = window.event.keyCode;
 		else if (e) keycode = e.which;
 		if (keycode == 13 && !enterLock) {  // 32:Spacebar  13:ENTER
-			enterLock = 1; // lock Enter
+//			enterLock = 1; // lock Enter
 			bottonFunNow(objNow);
+
+//			alert(ansQuerry); // debug
 		}
 	}
 
@@ -207,8 +213,7 @@
 
 
 <script type="text/javascript">
-	window.onload = showAndCore(); // still have bug: 不會等json讀完就先跑了
-//	alert($("#source").html());
+	showAndCore(); 
 </script>
 
 </body>
