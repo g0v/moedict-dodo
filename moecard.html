@@ -4,9 +4,8 @@
 
 <title>萌典閃卡</title>
 
-<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-<link href="https://www.moedict.tw/styles.css" rel="stylesheet"></link>
-<link rel="stylesheet" type="text/css" class="ui" href="../stylesheets/semantic.min.css">
+<script src="javascript/jquery-1.9.1.min.js"></script>
+<link rel="stylesheet" type="text/css" class="ui" href="css/semantic.min.css">
 
 
 </head>
@@ -179,7 +178,7 @@
 					indexM = eval(newSrc);
 				}
 				if (newSrc.substr(newSrc.length-4,4) == 'json') {
-					$.getJSON("https://www.moedict.tw/a/index.json", function(x) {indexM = x});	
+					$.getJSON("https://www.moedict.tw/c/index.json", function(x) {indexM = x});	
 				}
 
 				core();
@@ -192,7 +191,7 @@
 	//目標：桌電 ==> Enter連閃, 按字查詢		手機&平板 ==> 右滑連閃, 按字查詢
 
 
-	$.getJSON("https://www.moedict.tw/a/index.json", function(x) {
+	$.getJSON("https://www.moedict.tw/c/index.json", function(x) {
 		indexM = x;
 		core();core();core();
 	});
@@ -206,7 +205,7 @@
 
 <button class="ui pink large button" onclick="swi(this)">雙面</button>
 <button class="ui pink large button" onclick="swi(this)">漢英</button>
-<textarea id = "source" rows = "2" cols = "60">https://www.moedict.tw/a/index.json</textarea>
+<textarea id = "source" rows = "2" cols = "60">https://www.moedict.tw/c/index.json</textarea>
 <button class="ui pink large button" onclick="swi(this)">自訂字庫</button>
 <p align="center">以json路徑或形如['萌','字典', '閃', '卡']之串列取代，即可自訂字庫。您可開一個記事本，諸存累積您的自訂字庫</p>
 
