@@ -24,8 +24,6 @@
 
 	var indexM; // 之後還可加上用location.hash來給字庫的功能
 
-	$.getJSON("https://www.moedict.tw/a/index.json", function(x) {indexM = x});
-
 	function pickone(list) {
 		return list[Math.floor(Math.random() * list.length)];
 	}
@@ -192,6 +190,13 @@
 	}
 
 	//目標：桌電 ==> Enter連閃, 按字查詢		手機&平板 ==> 右滑連閃, 按字查詢
+
+
+	$.getJSON("https://www.moedict.tw/a/index.json", function(x) {
+		indexM = x;
+		core();core();core();
+	});
+
 
 	bottonFunNow = showAndCore;
 
