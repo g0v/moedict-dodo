@@ -157,8 +157,8 @@
 		var keycode; 
 		if (window.event) keycode = window.event.keyCode;
 		else if (e) keycode = e.which;
-		if (keycode == 13 && !enterLock) {  // 32:Spacebar  13:ENTER
-//			enterLock = 1; // lock Enter
+		if (keycode == 13) {  // 32:Spacebar  13:ENTER
+//			enterLock = 1; // lock Enter  !enterLock
 			bottonFunNow(objNow);
 
 //			alert(ansQuerry); // debug
