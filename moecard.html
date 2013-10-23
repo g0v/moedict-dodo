@@ -22,15 +22,29 @@
 <script type="text/javascript">
 	var bottonFunNow, objNow;
 	var flipped = 0;
-	var ansBig = '<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div><div></div>';
+//	var ansBig = '<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div><div></div>';
 //	var ansQueqe = [ansBig];
-	var ansQueqe = [{"zh":ansBig}];  //	alert(ansQueqe[0].zh);
+	var ansQueqe = [];
 
 	var start = 0; var faceNow = 0;
 	var card = "單面"; var mode = "閃卡模式";
 	var faceBack = "漢英";
 
 	var indexM; // 之後還可加上用location.hash來給字庫的功能
+
+	var example = {
+			"body" : ['身體', '汗毛','皮膚','肌肉','筋','骨','淋巴','血管','血','頭', '頭髮', '頭皮', '眉毛','眼睛','鼻子','耳朵','聽小骨','身蝸', '口','嘴巴','牙齒','門牙','犬齒','臼齒','智齒','舌頭','牙齦','喉嚨','氣管','心臟','心包','肺', '乳房','食道', '肩膀','橫隔膜','胃','脾臟','胰臟','小腸','大腸','闌尾', '肝臟', '膽', '腎臟', '腎上腺', '甲狀腺', '攝護腺', '皮脂腺', '手肘', '上臂', '下臂','手掌','手心','掌紋', '手指', '三頭肌', '二頭肌', '膀胱','肛門', '生殖器', '子宮', '陽具', '陰道', '陰蒂', '屁股','大腿','膝蓋','腳','腳踝','腳底板','腳掌', '腳指','經絡','穴道','神經','神經系統','循環系統','消化系統','排泄系統','汗水','眼淚','鼻涕','腦', '下視丘','前額葉','海馬迴','小腦','脊椎骨','顱骨','腦下垂體','生命','死亡','運動','吃','大便','尿尿', '睡眠','成長','老化'],
+
+			"relation" : ['媽媽','爸爸','爺爺','奶奶','外婆','外公', '祖先', '親戚','兄','弟','姐','妹', '姑', '嫂','叔','伯','姨','舅', '甥','媳','弟媳', '夫妻','兒子','女兒','孫子','孫女','外孫女','外孫', '後代','同宗', '同鄉','同居人','族人','青梅竹馬', '玩伴', '朋友', '夥伴','生死之交','患難之交','手帕交','同黨','同事','上司','下屬','隨從','跟班','領袖','競爭者','敵人','對頭','死敵','仇人','恩人','主人','奴隸','僕人','代議士','公僕','照顧者','剝削者','工具'],
+
+			"home" : ['家人','房屋','廚房','臥室','書房','教室','客廳','飯廳','庭院','公寓','公共空間','地下室','睡眠','飲食','運動','搬家','水管','電線','瓦斯','天然氣','綠建築','太陽能','風能','火力發電','核能','房租','房貸','寄人籬下','流浪','遊民'],
+
+			"food" : ['稻米','在來米','小麥','地瓜','芋頭','馬零薯','玉米','蕃茄','蔥','薑','蒜','韭','艾草','川七','昭和草','地瓜葉','佛手瓜','南瓜','絲瓜','香瓜','小黃瓜','大黃瓜','西瓜','哈蜜瓜','火龍果','奇異果','香蕉','芭樂','柳丁','鳳梨','芒果','文旦','連霧','香茅','香椿','桂枝','甘草'],
+
+			"chemistry" : ['氫','氦','鋰','鈹','硼','碳','氮','氧','氟','氖','鈉','鎂','鋁','矽','磷','硫','氯','氬','鉀','鈣','錳','鐵礦','鈷','鎳','鋅','砷','硒','銀','金','汞','碘','鈽','鈾','燃燒','化合','電解','蒸餾','聚合','乾餾', '碳酸氫納', '氯化納'],
+
+			"math" : ['計數','計算','加','減','乘','除','畫畫','圓','三角形','正方形','長方形','對稱','代數','分母','演算法','計算機','機率','統計','變數','函數','同構','指數','對數','三角函數','微積分','無限', '抽象', '投影', '垂直','正交','向量','特徵值','邏輯']
+		};
 
 	function pickone(list) {
 		return list[Math.floor(Math.random() * list.length)];
@@ -147,11 +161,9 @@
 		}
 	}
 
-	function swi(obj) {
-		var data = obj.innerHTML;
-		core(obj);
-
-		switch (data)
+	function swiByName (obj, name) {
+		core();
+		switch (name)
 		{
 			case "雙面" : 
 				doSwi(obj, "單面",'', "換成單面卡?", 0, "單面"); break;
@@ -159,26 +171,41 @@
 				doSwi(obj, "雙面",'', "換成雙面卡?", 0, "雙面"); break;	
 			case "漢英" : 
 				doSwi(obj, '', "英漢", "改為英漢對照?", 0, "英漢");
-				ansQueqe = []; core();
+//				ansQueqe = []; core();
 				break;
 			case "英漢" : 
 				doSwi(obj, '', "漢英", "改為漢英對照?", 0, "漢英");	
-				ansQueqe = []; core();
+//				ansQueqe = []; core();
 				break
 			case "自訂字庫" :
 				var newSrc = $("#source").val();
 
 				if (newSrc.substr(0,1) == '[') {
-					indexM = eval(newSrc);
-				}
+
+					console.log('[\'' + newSrc.substr(1,newSrc.length - 2).split(/,\s*/).join('\',\'') + '\']');
+		
+					indexM = eval('[\'' + newSrc.substr(1,newSrc.length - 2).split(/,\s*/).join('\',\'') + '\']');
+					}
+
 				if (newSrc.substr(newSrc.length-4,4) == 'json') {
 					$.getJSON("https://www.moedict.tw/c/index.json", function(x) {indexM = x});	
 				}
-				ansQueqe = []; core();
+				ansQueqe = []; core(); core();
 				break;		
 			default : 
 				alert("發生錯誤");
 		};			
+	}
+
+	function swi(obj) {
+		var data = obj.innerHTML;
+		swiByName (obj, data);
+	}
+
+	function chIndex(list) {
+		$("#source").val('['+list.join()+']');
+		indexM = list;
+		ansQueqe = []; core();
 	}
 
 	//目標：桌電 ==> Enter連閃, 按字查詢		手機&平板 ==> 右滑連閃, 按字查詢
@@ -193,23 +220,41 @@
 
 </script>
 
+<div style="float:right; width:20%;">
+	<p>範例字庫</p>
+	<button onclick="chIndex(example.body)">身體字庫</button>
+	<button onclick="chIndex(example.relation)">關係字庫</button>
+	<button onclick="chIndex(example.home)">居家字庫</button>
+	<button onclick="chIndex(example.food)">食物字庫</button>
+	<button onclick="chIndex(example.chemistry)">化學字庫</button>
+	<button onclick="chIndex(example.math)">數學字庫</button>
+</div>
+
+
 <button class="ui pink large button" onclick="swi(this)">單面</button>
 <button class="ui pink large button" onclick="swi(this)">漢英</button>
-<textarea id = "source" rows = "2" cols = "60">https://www.moedict.tw/c/index.json</textarea>
+
+<textarea id = "source" rows = "2" cols = "60" onchange="swiByName(this,'自訂字庫')">https://www.moedict.tw/c/index.json</textarea>
+
 <button class="ui pink large button" onclick="swi(this)">自訂字庫</button>
 <p align="center">
-以json路徑或形如['萌','字典', '閃', '卡']之串列取代，即可自訂字庫。您可開一個記事本，諸存累積您的自訂字庫
+以json路徑或形如[萌, 字典, 閃電, 卡片, 有趣]之串列取代，即可自訂字庫。您可開一個記事本，諸存累積您的自訂字庫
 </p>
+
 
 <div class="ui message blue" style="height: 50ex;">
 	<big><big id = "bigans" style="font-size: 400%; margin-left:20px;">
+	
+	<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div>
+	<div></div>
+
 	</big></big>
 </div>
 <br />
 
 
 <script type="text/javascript">
-	showAndCore(); 
+	core(); core(); 
 </script>
 
 </body>
