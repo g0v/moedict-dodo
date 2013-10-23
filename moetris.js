@@ -196,9 +196,9 @@
           $('.active').removeClass('active').removeClass('red');
           return draw('');
         }
-        if ($(this).hasClass('green')) {  //成功消掉?
+        if ($(this).hasClass('green')) {  //成功消掉時
           var tower = $('#tower').html(); tower = tower.substr(1, tower.length-2);
-          $('#tower').html('[' + $(this).text().split('space') + tower +']');
+          $('#tower').html('[' + $(this).text().split('space') + tower +']'); // 加入字塔中
 
           score += $(this).text().length;
           $('#score').text(score);

@@ -43,7 +43,7 @@
 
 			"chemistry" : ['氫','氦','鋰','鈹','硼','碳','氮','氧','氟','氖','鈉','鎂','鋁','矽','磷','硫','氯','氬','鉀','鈣','錳','鐵礦','鈷','鎳','鋅','砷','硒','銀','金','汞','碘','鈽','鈾','燃燒','化合','電解','蒸餾','聚合','乾餾', '碳酸氫納', '氯化納'],
 
-			"math" : ['計數','計算','加','減','乘','除','畫畫','圓','三角形','正方形','長方形','對稱','代數','分母','演算法','計算機','機率','統計','變數','函數','同構','指數','對數','三角函數','微積分','無限', '抽象', '投影', '垂直','正交','向量','特徵值','邏輯']
+			"math" : ['計數','計算','加法','減法','乘法','除法','畫畫','圓','三角形','正方形','長方形','對稱','代數','分母','演算法','計算機','機率','統計','變數','函數','同構','指數','對數','三角函數','微積分','無限', '抽象', '投影', '垂直','正交','向量','特徵值','邏輯']
 		};
 
 	function pickone(list) {
@@ -52,6 +52,12 @@
 
 	function clearStr (str){
 		return str.split('~').join('').split('`').join('').split('(S)').join('');
+	}
+
+	function toTower(word) {
+//		console.log(word.zh);
+       	var tower = $('#tower').html(); tower = tower.substr(1, tower.length-2);
+  		$('#tower').html('[' + word.zh.split('space')+ ',' + tower +']'); // 加入字塔中
 	}
 	
 	function innerBig () {
@@ -63,8 +69,9 @@
 		}
 		else {
 			if (ansQueqe[0]) {
+
 				if (card == "雙面") data = ansQueqe[0];
-				if (card == "單面") data = ansQueqe.shift();
+				if (card == "單面") {toTower(ansQueqe[0]); data = ansQueqe.shift()}
 
 				faceZh = "<div><a class = 'simple blue' href = "+"'https://www.moedict.tw/#"+data.zh+"' target = 'new'>"+data.zh+"</a></div>";
 				faceEn = "<div>"+data.en+"</div>";
@@ -135,7 +142,7 @@
 
 		if (card != "雙面" || faceNow == 2) {
 			core(obj);core(obj);
-			if (faceNow == 2) {ansQueqe.shift();}
+			if (faceNow == 2) {toTower(ansQueqe[0]); ansQueqe.shift()}
 			faceNow = 0;
 		}
 	}
@@ -231,7 +238,7 @@
 
 <button class="ui pink large button" onclick="swi(this)">自訂字庫</button>
 <p align="center">
-以json路徑或形如[萌, 字典, 閃電, 卡片, 有趣]之串列取代，即可自訂字庫。您可開一個記事本，諸存累積您的自訂字庫
+歡迎您參考範例的格式，自訂字庫，開一個文字檔，諸存累積
 </p>
 
 
@@ -242,7 +249,13 @@
 	</big>
 </div>
 <br />
-
+<div id="tower">[萌]</div>
+<div>
+	<button onclick="{
+	location = 'moecard.html#'+ $('#tower').html().split(/\s/).join('');
+	location.reload();
+	}">用這些字當字庫</button>
+</div>
 
 <script type="text/javascript">
 	if (!location.hash){
