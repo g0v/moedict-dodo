@@ -14,6 +14,14 @@
 <link rel="apple-touch-icon" href="icon-down.png" />
 </head><body>
 <div id="top" style="font-family: 'Fira Mono OT', monospace; position: absolute; top: -90px; text-align: right">Score: <span id="score">0</span></div>
+
+<div style="display: inline-block; float:right; width: 30%">
+    <div id="tower">[萌]</div>
+    <div>
+        <button onclick="{location = 'moecard.html#'+ $('#tower').html().split(/\s/).join('')}">以這些字去玩閃卡</button>
+    </div>
+</div>
+
 <div id="proto" style="display: inline-block; position: absolute; top: 533px; width: 458px">
   <div id="wrap" class="ui red button large">
     <i class="icon loading"></i>

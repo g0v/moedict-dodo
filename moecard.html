@@ -211,13 +211,6 @@
 	//目標：桌電 ==> Enter連閃, 按字查詢		手機&平板 ==> 右滑連閃, 按字查詢
 
 
-	$.getJSON("https://www.moedict.tw/c/index.json", function(x) {
-		indexM = x;	core();core();core();
-	});
-
-	bottonFunNow = showAndCore;
-	document.onkeydown = runCode;
-
 </script>
 
 <div style="float:right; width:20%;">
@@ -243,18 +236,29 @@
 
 
 <div class="ui message blue" style="height: 50ex;">
-	<big><big id = "bigans" style="font-size: 400%; margin-left:20px;">
+	<big id = "bigans" style="font-size: 400%; margin-left:20px;">
 	
 	<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div>
-	<div></div>
-
-	</big></big>
+	</big>
 </div>
 <br />
 
 
 <script type="text/javascript">
+	if (!location.hash){
+		$.getJSON("https://www.moedict.tw/c/index.json", function(x) {
+			indexM = x;	core();core();core();
+		});
+	}
+	else {
+		$('#source').val(location.hash.split('#')[1]);
+		swiByName(document.getElementById('source'),'自訂字庫');
+	}
+
+	bottonFunNow = showAndCore;
+	document.onkeydown = runCode;
 	core(); core(); 
+
 </script>
 
 </body>

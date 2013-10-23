@@ -196,7 +196,10 @@
           $('.active').removeClass('active').removeClass('red');
           return draw('');
         }
-        if ($(this).hasClass('green')) {
+        if ($(this).hasClass('green')) {  //成功消掉?
+          var tower = $('#tower').html(); tower = tower.substr(1, tower.length-2);
+          $('#tower').html('[' + $(this).text().split('space') + tower +']');
+
           score += $(this).text().length;
           $('#score').text(score);
           $(this).removeClass('active').removeClass('green');
