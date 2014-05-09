@@ -195,7 +195,7 @@
 					}
 
 				if (newSrc.substr(newSrc.length-4,4) == 'json') {
-					$.getJSON("https://www.moedict.tw/c/index.json", function(x) {indexM = x});	
+                                $.getJSON(newSrc, function(x) {indexM = x});
 				}
 				ansQueqe = []; core(); core();
 				break;		
