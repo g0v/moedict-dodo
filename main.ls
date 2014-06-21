@@ -167,7 +167,6 @@ function refresh (fixed-idx)
       $ \#book .text book
       $ \#example .text(example - /。$/)
       $ \a.ui.mini.button.tag .hide!
-      $ \#reason-prompt .text '我覺得底線處可填入的名詞為：'
       $ \#reason .attr \placeholder ''
       $ \#next .addClass \disabled
     $ \#x-key-link .attr href: "https://www.moedict.tw/~#{ x-key }" target: \_blank
@@ -198,10 +197,17 @@ function refresh (fixed-idx)
   $ \.choice .off \click .click ->
     $ \.choice .removeClass \green
     $(@).addClass \green
+    if $(@).attr('id') is \w
+      $ \#next .removeClass \disabled
+      $ \#reason .addClass \disabled
+      $ \#reason-prompt .text '說明(可不填，直接按「確定」)：'
+    else
+      $ \#reason-prompt .text '我覺得底線處可填入的名詞為：'
+      $ \#reason .removeClass \disabled
+      $ \#reason .one \change -> $ \#next .removeClass \disabled
+      $ \#reason .one \keydown -> $ \#next .removeClass \disabled
     $ \.tag .off \click .click ->
       $ \#reason .val ~> "#{ $ \#reason .val! }[#{ $(@).text! }]"
     <- $ \#notice .fadeOut \fast
     <- $ \#proceed .fadeIn \fast
     $ \#reason .focus!
-    $ \#reason .one \change -> $ \#next .removeClass \disabled
-    $ \#reason .one \keydown -> $ \#next .removeClass \disabled

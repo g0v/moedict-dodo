@@ -248,7 +248,6 @@
           $('#book').text(book);
           $('#example').text(replace$.call(example, /。$/, ''));
           $('a.ui.mini.button.tag').hide();
-          $('#reason-prompt').text('我覺得底線處可填入的名詞為：');
           $('#reason').attr('placeholder', '');
           $('#next').addClass('disabled');
         }
@@ -287,6 +286,20 @@
       return $('.choice').off('click').click(function(){
         $('.choice').removeClass('green');
         $(this).addClass('green');
+        if ($(this).attr('id') === 'w') {
+          $('#next').removeClass('disabled');
+          $('#reason').addClass('disabled');
+          $('#reason-prompt').text('說明(可不填，直接按「確定」)：');
+        } else {
+          $('#reason-prompt').text('我覺得底線處可填入的名詞為：');
+          $('#reason').removeClass('disabled');
+          $('#reason').one('change', function(){
+            return $('#next').removeClass('disabled');
+          });
+          $('#reason').one('keydown', function(){
+            return $('#next').removeClass('disabled');
+          });
+        }
         $('.tag').off('click').click(function(){
           var this$ = this;
           return $('#reason').val(function(){
@@ -295,13 +308,7 @@
         });
         return $('#notice').fadeOut('fast', function(){
           return $('#proceed').fadeIn('fast', function(){
-            $('#reason').focus();
-            $('#reason').one('change', function(){
-              return $('#next').removeClass('disabled');
-            });
-            return $('#reason').one('keydown', function(){
-              return $('#next').removeClass('disabled');
-            });
+            return $('#reason').focus();
           });
         });
       });
