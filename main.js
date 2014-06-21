@@ -92,22 +92,29 @@
       }
       return false;
     };
-    getScript('data.js', function(){
+    getScript('geili.js', function(){
+      var retry;
       items = window.dodoData;
-      return getScript('oxynyms.js?', function(){
-        var retry;
-        items = items.concat(window.dodoOxynyms);
-        if (grokHash()) {
-          return;
+      if (grokHash()) {
+        return;
+      }
+      return (retry = function(){
+        if (!window.total) {
+          return setTimeout(retry, 100);
         }
-        return (retry = function(){
-          if (!window.total) {
-            return setTimeout(retry, 100);
-          }
-          return refresh();
-        })();
-      });
+        return refresh();
+      })();
     });
+    /*
+    getScript \data.js ->
+      items := window.dodo-data
+      getScript \oxynyms.js? ->
+        items ++= window.dodo-oxynyms
+        return if grok-hash!
+        do retry = ->
+          return setTimeout retry, 100ms unless window.total
+          refresh!
+    */
     refreshSeen = function(data){
       var processed, i$, ref$, len$, line, key;
       window.seen = data;
@@ -179,7 +186,7 @@
       return result + "\n" + idx;
     }
     function refresh(fixedIdx){
-      var ref$, book, xKey, x, yKey, y, idx, comma, i$, len$, chunk;
+      var ref$, book, xKey, x, yKey, y, idx, example, comma, i$, len$, chunk;
       ref$ = split$.call(pickItem(fixedIdx), '\n'), book = ref$[0], xKey = ref$[1], x = ref$[2], yKey = ref$[3], y = ref$[4], idx = ref$[5];
       key = xKey + "," + yKey;
       /*
@@ -226,7 +233,30 @@
         'class': 'log-reason'
       })));
       $('.do-search').attr('target', '_blank');
-      if (book === '教育部重編國語辭典修訂本') {
+      if (/^「/.exec(book)) {
+        $('#key-links').show();
+        $('#chain-links').hide();
+        $('#type').text("引文用字");
+        $('.do-search.x').attr('href', "https://www.google.com.tw/#q=\"" + x.replace(/[`~「」]/g, '').replace(/﹍+/, '*') + "\"");
+        $('.do-search.y').attr('href', "https://www.google.com.tw/#q=\"" + y.replace(/[`~「」]/g, '').replace(/﹍+/, '*') + "\"");
+        $('#maybe-duplicate').hide();
+        $('#example').text('');
+        if (/\|/.exec(book)) {
+          example = book;
+          book = replace$.call(book, /\|.*/, '');
+          example = replace$.call(example, /.*\|/, '');
+          $('#book').text(book);
+          $('#example').text(replace$.call(example, /。$/, ''));
+          $('a.ui.mini.button.tag').hide();
+          $('#reason-prompt').text('我覺得底線處可填入的名詞為：');
+          $('#reason').attr('placeholder', '');
+          $('#next').addClass('disabled');
+        }
+        $('#x-key-link').attr({
+          href: "https://www.moedict.tw/~" + xKey,
+          target: '_blank'
+        });
+      } else if (book === '教育部重編國語辭典修訂本') {
         $('#chain-links').text('');
         comma = "";
         for (i$ = 0, len$ = (ref$ = (replace$.call(y, /中.*/, '').replace(/的意思.*/, '').replace(/[「」]/g, '')).split('、')).length; i$ < len$; ++i$) {
@@ -265,7 +295,13 @@
         });
         return $('#notice').fadeOut('fast', function(){
           return $('#proceed').fadeIn('fast', function(){
-            return $('#reason').focus();
+            $('#reason').focus();
+            $('#reason').one('change', function(){
+              return $('#next').removeClass('disabled');
+            });
+            return $('#reason').one('keydown', function(){
+              return $('#next').removeClass('disabled');
+            });
           });
         });
       });

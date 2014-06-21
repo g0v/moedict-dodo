@@ -55,7 +55,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 <div id="book" class="header">
 <i class="icon loading"></i>載入中，請稍候...
 </div>
-<i class="icon info"></i>底下是程式自動比對出辭典裡<span id="type">引文用字</span>不同的條目，請幫忙點選<strong>正確</strong>的例句。
+<i class="icon info"></i><span id="example">引文用字</span>。請幫忙點選<strong>正確</strong>的句型。
 </div>
 <form class="ui form fluid segment attached " onsubmit="$('#next').trigger('click'); return false">
 <ol class="ui list">
@@ -68,8 +68,8 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
   <a class="do-search y ui icon massive button"><i class="search icon"></i></a>
 </li>
 <li class="ui item">
-  <a id="z" class="choice ui massive button">兩個都對（或都有問題）</a>
-  <a id="w" class="choice ui massive button" style="margin-left: 10px">無法判斷</a>
+  <a id="z" class="choice ui massive button">兩個都對</a>
+  <a id="w" class="choice ui massive button" style="margin-left: 10px">兩個都不對</a>
 </li>
 </ol>
 <div id="notice">
@@ -78,7 +78,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 </div>
 <div id="proceed" class="hidden two fields">
   <div class="field">
-    <label><i class="icon help"></i>我這樣選的理由：</label>
+    <label><i class="icon help"></i><span id="reason-prompt">我這樣選的理由：</label>
     <input id="reason" placeholder="「都有問題」時請註明原因。常用的字樣列在下方，點選即可加入。" class="ui input" type="text">
     <a class="ui mini button tag">非常明顯</a>
     <a class="ui mini button tag">不太確定</a>
@@ -110,8 +110,10 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
     出自
     <span id="key-links">
     <a id="x-key-link">「<i class="icon external url"></i><span id="x-key">...</span>」</a>
+    <span id="maybe-duplicate">
     及
     <a id="y-key-link">「<i class="icon external url"></i><span id="y-key">...</span>」</a>
+    </span>
     </span>
     <span id="chain-links">
     </span>
@@ -160,6 +162,6 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 </div>
 <div class="ui black progress large" style="background: black; color: white">
 <div id="total-bar" class="bar" style="width:0%">
-    <span id="total-text"><i class="icon loading"></i></span>
+    <span id="total-text" style="white-space: nowrap"><i class="icon loading"></i></span>
 </div>
 </body></html>

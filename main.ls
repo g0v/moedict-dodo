@@ -54,6 +54,13 @@ window.grok-hash = grok-hash = ->
     return true
   return false
 
+getScript \geili.js ->
+  items := window.dodo-data
+  return if grok-hash!
+  do retry = ->
+    return setTimeout retry, 100ms unless window.total
+    refresh!
+/*
 getScript \data.js ->
   items := window.dodo-data
   getScript \oxynyms.js? ->
@@ -62,6 +69,7 @@ getScript \data.js ->
     do retry = ->
       return setTimeout retry, 100ms unless window.total
       refresh!
+*/
 
 refresh-seen = (data) ->
   window.seen = data
@@ -143,7 +151,27 @@ function refresh (fixed-idx)
 
   $ \.do-search .attr \target \_blank
 
-  if book is \教育部重編國語辭典修訂本
+  if book is /^「/
+    $ \#key-links .show!
+    $ \#chain-links .hide!
+    $ \#type .text "引文用字"
+    $ \.do-search.x .attr \href "https://www.google.com.tw/\#q=\"#{ x.replace(/[`~「」]/g '').replace(/﹍+/, '*') }\""
+    $ \.do-search.y .attr \href "https://www.google.com.tw/\#q=\"#{ y.replace(/[`~「」]/g '').replace(/﹍+/, '*') }\""
+    $ \#maybe-duplicate .hide!
+    $ \#example .text ''
+    #「送」：為離去的人送行或相陪到目的地。|例：「送別」、「送親」、「送孩子去幼稚園」。
+    if book is /\|/
+      example = book
+      book -= /\|.*/
+      example -= /.*\|/
+      $ \#book .text book
+      $ \#example .text(example - /。$/)
+      $ \a.ui.mini.button.tag .hide!
+      $ \#reason-prompt .text '我覺得底線處可填入的名詞為：'
+      $ \#reason .attr \placeholder ''
+      $ \#next .addClass \disabled
+    $ \#x-key-link .attr href: "https://www.moedict.tw/~#{ x-key }" target: \_blank
+  else if book is \教育部重編國語辭典修訂本
     $ \#chain-links .text ''
     comma = ""
     for chunk in (y - /中.*/ - /的意思.*/ - /[「」]/g).split \、
@@ -175,3 +203,5 @@ function refresh (fixed-idx)
     <- $ \#notice .fadeOut \fast
     <- $ \#proceed .fadeIn \fast
     $ \#reason .focus!
+    $ \#reason .one \change -> $ \#next .removeClass \disabled
+    $ \#reason .one \keydown -> $ \#next .removeClass \disabled
