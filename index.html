@@ -67,7 +67,9 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
 </li>
 <li class="ui item">
   <a id="z" class="choice ui massive button">兩個都可以填入<strong>同一個名詞</strong></a>
-  <a id="w" class="choice ui massive button" style="margin-left: 10px">兩個都不可以填入名詞</a>
+ </li><li>
+  <a id="w" class="choice ui massive button">兩個都不可以填入名詞</a>
+  <a id="q" class="choice ui massive button" style="margin-left: 10px">無法判斷</a>
 </li>
 </ol>
 <div id="notice">
@@ -75,7 +77,7 @@ src: url('https://www.moedict.tw/fonts/MOEDICT.eot?#iefix') format('eot'), url('
             class="search icon"></i></span>&nbsp;&nbsp;」按鈕可顯示搜尋引擎頁面。如果難以判定，請選「無法判斷」。
 </div>
 <div id="proceed" class="hidden two fields">
-  <div class="field">
+  <div class="field" id="reason-field">
     <label><i class="icon help"></i><span id="reason-prompt">我這樣選的理由：</label>
     <input id="reason" placeholder="「都有問題」時請註明原因。常用的字樣列在下方，點選即可加入。" class="ui input" type="text">
     <a class="ui mini button tag">非常明顯</a>

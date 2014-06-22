@@ -289,10 +289,16 @@
         if ($(this).attr('id') === 'w') {
           $('#next').removeClass('disabled');
           $('#reason').addClass('disabled');
+          $('#reason-field').css('visibility', 'visible');
           $('#reason-prompt').text('我覺得：a.這是現在國語會用的動詞，但兩個都不可以填入名詞；或是b. 這是現在國語不會用的動詞。');
+        } else if ($(this).attr('id') === 'q') {
+          $('#next').removeClass('disabled');
+          $('#reason-field').css('visibility', 'hidden');
+          $('#reason-prompt').text('');
         } else {
           $('#reason-prompt').text('我覺得底線處可填入的名詞為：');
           $('#reason').removeClass('disabled');
+          $('#reason-field').css('visibility', 'visible');
           $('#reason').one('change', function(){
             return $('#next').removeClass('disabled');
           });
