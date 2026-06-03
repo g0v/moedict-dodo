@@ -259,7 +259,8 @@
 
 <script type="text/javascript">
 	if (!location.hash){
-		$.getJSON("https://www.moedict.tw/c/index.json", function(x) {
+		// https://www.moedict.tw/a/index.json
+		$.getJSON("https://www.moedict.org/a/index.json", function(x) {
 			indexM = x;	core();core();core();
 		});
 	}
