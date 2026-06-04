@@ -1,279 +1,527 @@
 <!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>萌典閃卡</title>
 
 <style type="text/css">
-	.simple {
-		text-decoration: none;
-/*		text-transform: none; */
+	:root {
+		--pink: #e03997;
+		--pink-dark: #c12378;
+		--blue: #2185d0;
+		--bg: #f7f7fb;
+		--card-bg: #eef3fb;
+		--border: #d6dbe6;
+		--text: #2b2b3a;
+		--muted: #6b7280;
+	}
+
+	* { box-sizing: border-box; }
+
+	html, body {
+		margin: 0;
+		padding: 0;
+		background: var(--bg);
+		color: var(--text);
+		font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC",
+			-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	#app {
+		max-width: 880px;
+		margin: 0 auto;
+		padding: 16px clamp(12px, 4vw, 28px) 48px;
+	}
+
+	header h1 {
+		font-size: clamp(1.3rem, 5vw, 1.8rem);
+		margin: 8px 0 16px;
+		text-align: center;
+		color: var(--pink-dark);
+	}
+
+	/* ---- controls ---- */
+	.controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px 20px;
+		align-items: flex-start;
+		background: #fff;
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		padding: 14px 16px;
+		margin-bottom: 14px;
+	}
+
+	.control-group {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		min-width: 0;
+	}
+	.control-group.grow { flex: 1 1 220px; }
+
+	.control-group > .label {
+		font-size: 0.8rem;
+		font-weight: 700;
+		color: var(--muted);
+		letter-spacing: 0.04em;
+	}
+
+	.radios {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.radios label {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 7px 12px;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		cursor: pointer;
+		font-size: 0.95rem;
+		background: #fafbfd;
+		user-select: none;
+		transition: background .12s, border-color .12s;
+	}
+	.radios label:has(input:checked) {
+		background: var(--pink);
+		border-color: var(--pink);
+		color: #fff;
+	}
+	.radios input { accent-color: var(--pink-dark); margin: 0; }
+
+	select, textarea {
+		font: inherit;
+		padding: 9px 12px;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: #fff;
+		color: var(--text);
+		width: 100%;
+	}
+	textarea { resize: vertical; line-height: 1.5; }
+
+	.custom { margin-bottom: 14px; }
+	.custom .hint {
+		font-size: 0.82rem;
+		color: var(--muted);
+		margin: 6px 2px 0;
+	}
+
+	/* ---- card ---- */
+	.card-area {
+		position: relative;
+		min-height: 46vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 14px;
+		background: var(--card-bg);
+		border: 1px solid var(--border);
+		border-radius: 16px;
+		padding: 28px 18px;
+		cursor: pointer;
+		overflow-wrap: anywhere;
+	}
+
+	.welcome { color: var(--muted); line-height: 1.8; font-size: 1rem; }
+
+	.face {
+		font-size: clamp(1.6rem, 7vw, 3rem);
+		font-weight: 600;
+		line-height: 1.25;
+	}
+	.face.en { font-size: clamp(1.1rem, 4.5vw, 1.9rem); font-weight: 500; }
+	.face a { color: var(--blue); text-decoration: none; }
+	.face a:hover { text-decoration: underline; }
+
+	.card-area hr {
+		width: 60%;
+		max-width: 320px;
+		border: none;
+		border-top: 1px dashed var(--border);
+		margin: 4px 0;
+	}
+
+	.flip-hint {
+		position: absolute;
+		bottom: 10px;
+		right: 14px;
+		font-size: 0.78rem;
+		color: var(--muted);
+	}
+
+	/* ---- actions ---- */
+	.actions {
+		display: flex;
+		gap: 10px;
+		margin: 14px 0;
+	}
+	button.act {
+		flex: 1;
+		font: inherit;
+		font-size: 1.05rem;
+		font-weight: 600;
+		padding: 13px 16px;
+		border: none;
+		border-radius: 10px;
+		background: var(--pink);
+		color: #fff;
+		cursor: pointer;
+		transition: background .12s;
+	}
+	button.act:hover { background: var(--pink-dark); }
+	button.act.ghost {
+		background: #fff;
+		color: var(--pink-dark);
+		border: 1px solid var(--pink);
+		flex: 0 0 auto;
+	}
+
+	/* ---- tower ---- */
+	.tower {
+		margin-top: 22px;
+		background: #fff;
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		padding: 14px 16px;
+	}
+	.tower h3 {
+		margin: 0 0 8px;
+		font-size: 0.95rem;
+		color: var(--muted);
+	}
+	.tower-words {
+		line-height: 2;
+		font-size: 1.05rem;
+		word-break: break-all;
+		margin-bottom: 10px;
+		min-height: 1.5em;
+	}
+
+	@media (max-width: 480px) {
+		.controls { gap: 10px 14px; }
+		.control-group.grow { flex-basis: 100%; }
 	}
 </style>
-
-<script src="javascript/jquery-1.9.1.min.js"></script>
-<link rel="stylesheet" type="text/css" class="ui" href="css/semantic.min.css">
-
-
 </head>
 
 <body>
 
+<div id="app">
+	<header><h1>萌典閃卡 📇</h1></header>
+
+	<section class="controls">
+		<div class="control-group grow">
+			<span class="label">字庫</span>
+			<select v-model="selectedLib" @change="loadLibrary">
+				<option v-for="(label, key) in libLabels" :key="key" :value="key">{{ label }}</option>
+			</select>
+		</div>
+
+		<div class="control-group grow">
+			<span class="label">模式</span>
+			<select v-model="mode">
+				<optgroup label="單面卡（正反一起看）">
+					<option value="雙語">雙語對照</option>
+				</optgroup>
+				<optgroup label="雙面卡（點一下翻面）">
+					<option value="漢英">漢英：先看中文，翻面看英文</option>
+					<option value="英漢">英漢：先看英文，翻面看中文</option>
+				</optgroup>
+			</select>
+		</div>
+	</section>
+
+	<section class="custom" v-show="selectedLib === 'custom'">
+		<textarea v-model="customSrc" rows="2" @change="loadCustom"
+			placeholder="貼上字陣列，例如 [蘋果, 香蕉]，或一個 .json 字庫網址"></textarea>
+		<p class="hint">
+			歡迎參考範例格式自訂字庫：可直接填寫 <code>[詞一, 詞二, …]</code>，
+			或開一個文字檔存成 <code>.json</code> 後填入網址，逐步累積你自己的字庫。
+		</p>
+	</section>
+
+	<section class="card-area" @click="next">
+		<div v-if="!currentCard" class="welcome">
+			<p v-if="loading">萌典讀取中… 請稍候片刻 ⏳</p>
+			<template v-else>
+				<p>歡迎使用活潑的萌典閃卡！</p>
+				<p>點一下卡片，或按 <b>Enter</b> / <b>→</b> 開始。</p>
+			</template>
+		</div>
+
+		<template v-else>
+			<div class="face" :class="{ en: !display.top.link }">
+				<a v-if="display.top.link" :href="display.top.link" target="_blank" rel="noopener" @click.stop>{{ display.top.text }}</a>
+				<span v-else>{{ display.top.text }}</span>
+			</div>
+			<template v-if="display.bottom">
+				<hr>
+				<div class="face" :class="{ en: !display.bottom.link }">
+					<a v-if="display.bottom.link" :href="display.bottom.link" target="_blank" rel="noopener" @click.stop>{{ display.bottom.text }}</a>
+					<span v-else>{{ display.bottom.text }}</span>
+				</div>
+			</template>
+			<span class="flip-hint">{{ nextLabel }}</span>
+		</template>
+	</section>
+
+	<div class="actions">
+		<button class="act" @click="next">{{ nextLabel }}</button>
+		<button class="act ghost" @click="useTowerAsLib" :disabled="tower.length <= 1">用字塔當字庫</button>
+	</div>
+
+	<section class="tower">
+		<h3>字塔（已翻過的字）</h3>
+		<div class="tower-words">{{ tower.join('　') }}</div>
+	</section>
+</div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script type="text/javascript">
-	var bottonFunNow, objNow;
-	var flipped = 0;
-//	var ansBig = '<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div><div></div>';
-//	var ansQueqe = [ansBig];
-	var ansQueqe = [];
+const example = {
+	body: ['身體','汗毛','皮膚','肌肉','筋','骨','淋巴','血管','血','頭','頭髮','頭皮','眉毛','眼睛','鼻子','耳朵','聽小骨','身蝸','口','嘴巴','牙齒','門牙','犬齒','臼齒','智齒','舌頭','牙齦','喉嚨','氣管','心臟','心包','肺','乳房','食道','肩膀','橫隔膜','胃','脾臟','胰臟','小腸','大腸','闌尾','肝臟','膽','腎臟','腎上腺','甲狀腺','攝護腺','皮脂腺','手肘','上臂','下臂','手掌','手心','掌紋','手指','三頭肌','二頭肌','膀胱','肛門','生殖器','子宮','陽具','陰道','陰蒂','屁股','大腿','膝蓋','腳','腳踝','腳底板','腳掌','腳指','經絡','穴道','神經','神經系統','循環系統','消化系統','排泄系統','汗水','眼淚','鼻涕','腦','下視丘','前額葉','海馬迴','小腦','脊椎骨','顱骨','腦下垂體','生命','死亡','運動','吃','大便','尿尿','睡眠','成長','老化'],
+	relation: ['媽媽','爸爸','爺爺','奶奶','外婆','外公','祖先','親戚','兄','弟','姐','妹','姑','嫂','叔','伯','姨','舅','甥','媳','弟媳','夫妻','兒子','女兒','孫子','孫女','外孫女','外孫','後代','同宗','同鄉','同居人','族人','青梅竹馬','玩伴','朋友','夥伴','生死之交','患難之交','手帕交','同黨','同事','上司','下屬','隨從','跟班','領袖','競爭者','敵人','對頭','死敵','仇人','恩人','主人','奴隸','僕人','代議士','公僕','照顧者','剝削者','工具'],
+	home: ['家人','房屋','廚房','臥室','書房','教室','客廳','飯廳','庭院','公寓','公共空間','地下室','睡眠','飲食','運動','搬家','水管','電線','瓦斯','天然氣','綠建築','太陽能','風能','火力發電','核能','房租','房貸','寄人籬下','流浪','遊民'],
+	food: ['稻米','在來米','小麥','地瓜','芋頭','馬零薯','玉米','蕃茄','蔥','薑','蒜','韭','艾草','川七','昭和草','地瓜葉','佛手瓜','南瓜','絲瓜','香瓜','小黃瓜','大黃瓜','西瓜','哈蜜瓜','火龍果','奇異果','香蕉','芭樂','柳丁','鳳梨','芒果','文旦','連霧','香茅','香椿','桂枝','甘草'],
+	chemistry: ['氫','氦','鋰','鈹','硼','碳','氮','氧','氟','氖','鈉','鎂','鋁','矽','磷','硫','氯','氬','鉀','鈣','錳','鐵礦','鈷','鎳','鋅','砷','硒','銀','金','汞','碘','鈽','鈾','燃燒','化合','電解','蒸餾','聚合','乾餾','碳酸氫納','氯化納'],
+	math: ['計數','計算','加法','減法','乘法','除法','畫畫','圓','三角形','正方形','長方形','對稱','代數','分母','演算法','計算機','機率','統計','變數','函數','同構','指數','對數','三角函數','微積分','無限','抽象','投影','垂直','正交','向量','特徵值','邏輯'],
+	emotion: ['喜悅','快樂','高興','開心','興奮','期待','滿足','幸福','感動','感激','愛','喜歡','憤怒','生氣','不滿','怨恨','嫉妒','羨慕','悲傷','難過','傷心','哀傷','痛苦','沮喪','失望','絕望','孤獨','寂寞','恐懼','害怕','緊張','焦慮','擔心','不安','驚訝','羞愧','慚愧','尷尬','委屈','厭惡','噁心','無聊','平靜','放鬆','安心','同情','憐憫','思念','想念','後悔','內疚','勇氣','信心','希望'],
+	animal: ['貓','狗','老虎','獅子','大象','長頸鹿','斑馬','河馬','犀牛','猴子','猩猩','熊','貓熊','狐狸','狼','兔子','老鼠','松鼠','鹿','牛','馬','羊','豬','雞','鴨','鵝','鳥','麻雀','老鷹','貓頭鷹','鴿子','企鵝','鴕鳥','孔雀','魚','鯊魚','鯨魚','海豚','章魚','烏龜','螃蟹','蝦','青蛙','蛇','蜥蜴','鱷魚','蝴蝶','蜜蜂','螞蟻','蜘蛛','蚊子','蒼蠅','蟑螂','蝸牛','蚯蚓'],
+	tool: ['鎚子','螺絲起子','扳手','鉗子','鋸子','鑿子','銼刀','刨刀','鑽子','釘子','螺絲','尺','捲尺','水平儀','刀','剪刀','美工刀','菜刀','斧頭','鐮刀','鏟子','鋤頭','耙子','掃把','拖把','水桶','梯子','繩子','膠帶','膠水','針','線','筆','鉛筆','橡皮擦','紙','電腦','手機','鍵盤','滑鼠','印表機','電鑽','砂紙','手電筒','望遠鏡','顯微鏡','溫度計','秤']
+};
 
-	var start = 0; var faceNow = 0;
-	var card = "單面"; var mode = "閃卡模式";
-	var faceBack = "漢英";
+const libLabels = {
+	all: '全部（整本萌典）',
+	emotion: '情緒字庫',
+	animal: '動物字庫',
+	tool: '工具字庫',
+	relation: '關係字庫',
+	home: '居家字庫',
+	food: '食物字庫',
+	body: '身體字庫',
+	math: '數學字庫',
+	chemistry: '化學字庫',
+	custom: '自訂字庫'
+};
 
-	var indexM; // 之後還可加上用location.hash來給字庫的功能
+const INDEX_URL = 'https://www.moedict.tw/a/index.json';
+const PREFETCH = 3;        // 預先讀好的卡片數，按鍵時不用等
+const BUFFER_LOW = 2;      // 佇列低於此值就補抓
 
-	var example = {
-			"body" : ['身體', '汗毛','皮膚','肌肉','筋','骨','淋巴','血管','血','頭', '頭髮', '頭皮', '眉毛','眼睛','鼻子','耳朵','聽小骨','身蝸', '口','嘴巴','牙齒','門牙','犬齒','臼齒','智齒','舌頭','牙齦','喉嚨','氣管','心臟','心包','肺', '乳房','食道', '肩膀','橫隔膜','胃','脾臟','胰臟','小腸','大腸','闌尾', '肝臟', '膽', '腎臟', '腎上腺', '甲狀腺', '攝護腺', '皮脂腺', '手肘', '上臂', '下臂','手掌','手心','掌紋', '手指', '三頭肌', '二頭肌', '膀胱','肛門', '生殖器', '子宮', '陽具', '陰道', '陰蒂', '屁股','大腿','膝蓋','腳','腳踝','腳底板','腳掌', '腳指','經絡','穴道','神經','神經系統','循環系統','消化系統','排泄系統','汗水','眼淚','鼻涕','腦', '下視丘','前額葉','海馬迴','小腦','脊椎骨','顱骨','腦下垂體','生命','死亡','運動','吃','大便','尿尿', '睡眠','成長','老化'],
+const { createApp } = Vue;
 
-			"relation" : ['媽媽','爸爸','爺爺','奶奶','外婆','外公', '祖先', '親戚','兄','弟','姐','妹', '姑', '嫂','叔','伯','姨','舅', '甥','媳','弟媳', '夫妻','兒子','女兒','孫子','孫女','外孫女','外孫', '後代','同宗', '同鄉','同居人','族人','青梅竹馬', '玩伴', '朋友', '夥伴','生死之交','患難之交','手帕交','同黨','同事','上司','下屬','隨從','跟班','領袖','競爭者','敵人','對頭','死敵','仇人','恩人','主人','奴隸','僕人','代議士','公僕','照顧者','剝削者','工具'],
-
-			"home" : ['家人','房屋','廚房','臥室','書房','教室','客廳','飯廳','庭院','公寓','公共空間','地下室','睡眠','飲食','運動','搬家','水管','電線','瓦斯','天然氣','綠建築','太陽能','風能','火力發電','核能','房租','房貸','寄人籬下','流浪','遊民'],
-
-			"food" : ['稻米','在來米','小麥','地瓜','芋頭','馬零薯','玉米','蕃茄','蔥','薑','蒜','韭','艾草','川七','昭和草','地瓜葉','佛手瓜','南瓜','絲瓜','香瓜','小黃瓜','大黃瓜','西瓜','哈蜜瓜','火龍果','奇異果','香蕉','芭樂','柳丁','鳳梨','芒果','文旦','連霧','香茅','香椿','桂枝','甘草'],
-
-			"chemistry" : ['氫','氦','鋰','鈹','硼','碳','氮','氧','氟','氖','鈉','鎂','鋁','矽','磷','硫','氯','氬','鉀','鈣','錳','鐵礦','鈷','鎳','鋅','砷','硒','銀','金','汞','碘','鈽','鈾','燃燒','化合','電解','蒸餾','聚合','乾餾', '碳酸氫納', '氯化納'],
-
-			"math" : ['計數','計算','加法','減法','乘法','除法','畫畫','圓','三角形','正方形','長方形','對稱','代數','分母','演算法','計算機','機率','統計','變數','函數','同構','指數','對數','三角函數','微積分','無限', '抽象', '投影', '垂直','正交','向量','特徵值','邏輯']
+createApp({
+	data() {
+		return {
+			mode: '雙語',        // 雙語(=單面) / 漢英(=雙面) / 英漢(=雙面)
+			selectedLib: 'animal', // all
+			customSrc: INDEX_URL,
+			libLabels,
+			indexM: [],          // 目前字庫
+			ansQueqe: [],        // 已讀好的卡片佇列
+			tower: ['萌'],       // 字塔
+			faceNow: 0,          // 雙面卡目前顯示哪一面 (0/1)
+			loading: false,
+			fetching: 0          // 進行中的抓取數，避免重複補抓
 		};
+	},
 
-	function pickone(list) {
-		return list[Math.floor(Math.random() * list.length)];
-	}
-
-	function clearStr (str){
-		return str.split('~').join('').split('`').join('').split('(S)').join('');
-	}
-
-	function toTower(word) {
-//		console.log(word.zh);
-       	var tower = $('#tower').html(); tower = tower.substr(1, tower.length-2);
-  		$('#tower').html('[' + word.zh.split('space')+ ',' + tower +']'); // 加入字塔中
-	}
-	
-	function innerBig () {
-		var face1, face2, faceZh, faceEn;
-		var data;
-		
-		if (flipped) {
-			return;
-		}
-		else {
-			if (ansQueqe[0]) {
-
-				if (card == "雙面") data = ansQueqe[0];
-				if (card == "單面") {toTower(ansQueqe[0]); data = ansQueqe.shift()}
-
-				faceZh = "<div><a class = 'simple blue' href = "+"'https://www.moedict.tw/#"+data.zh+"' target = 'new'>"+data.zh+"</a></div>";
-				faceEn = "<div>"+data.en+"</div>";
-
-				switch (faceBack) {
-					case "漢英":
-						face1 = faceZh; face2 = faceEn; break;
-					case "英漢":
-						face1 = faceEn; face2 = faceZh; break;
-				}
-
-				if (card == "雙面") {
-					$('#bigans').show().children("hr").hide();
-					if (faceNow == 0) $('#bigans').html(face1);
-					if (faceNow == 1) $('#bigans').html(face2);
-				}
-
-				if (card == "單面") $('#bigans').html(face1 + '<hr>'+face2);
+	computed: {
+		currentCard() {
+			return this.ansQueqe[0] || null;
+		},
+		// 雙語＝單面卡，正反一起顯示；漢英/英漢＝雙面卡
+		showBoth() {
+			return this.mode === '雙語';
+		},
+		display() {
+			const c = this.currentCard;
+			if (!c) return { top: null, bottom: null };
+			const zh = { text: c.zh, link: 'https://www.moedict.tw/' + c.zh };
+			const en = { text: c.en, link: null };
+			if (this.showBoth) {
+				return { top: zh, bottom: en };         // 雙語：中文在上、英文在下
 			}
-			else {
-				document.getElementById('bigans').innerHTML ="<div class = 'cyan'>萌典讀取中...請3秒後再按一次Enter</div>";
+			// 雙面：一次只顯示一面
+			const order = this.mode === '英漢' ? [en, zh] : [zh, en];
+			return { top: order[this.faceNow], bottom: null };
+		},
+		nextLabel() {
+			if (!this.currentCard) return '開始';
+			if (!this.showBoth && this.faceNow === 0) return '翻面';
+			return '下一張';
+		}
+	},
+
+	watch: {
+		// 切換模式時，回到正面
+		mode() { this.faceNow = 0; }
+	},
+
+	methods: {
+		pickone(list) {
+			return list[Math.floor(Math.random() * list.length)];
+		},
+
+		// 抓一張卡片（含解析「same as」轉指的英文翻譯）
+		async core(retry = 0) {
+			if (!this.indexM.length || retry > 8) return;
+			this.fetching++;
+			try {
+				const wordNow = this.pickone(this.indexM);
+				const wordNowD = decodeURIComponent(String(wordNow).replace(/\+/g, ' '));
+				const x = await fetch('https://www.moedict.tw/a/' + wordNowD + '.json').then(r => r.json());
+
+				let enWord = x.translation && x.translation.English && x.translation.English[0];
+				let guard = 0;
+				while (typeof enWord === 'string' && enWord.startsWith('same as `') && guard < 3) {
+					const nextWord = decodeURIComponent(
+						enWord.split('same as `')[1].split('~')[0].replace(/\+/g, ' ')
+					);
+					const y = await fetch('https://www.moedict.tw/a/' + nextWord + '.json').then(r => r.json());
+					enWord = y.translation && y.translation.English && y.translation.English[0];
+					guard++;
+				}
+
+				if (!enWord) {                 // 此條目無英文對照，換一張
+					this.fetching--;
+					return this.core(retry + 1);
+				}
+				this.ansQueqe.push({ zh: wordNowD, en: enWord });
+				this.loading = false;
+			} catch (err) {
+				console.warn('讀取失敗，換一張：', err);
+				this.fetching--;
+				return this.core(retry + 1);
+			}
+			this.fetching--;
+		},
+
+		// 補滿佇列
+		fill() {
+			const need = PREFETCH - this.ansQueqe.length - this.fetching;
+			for (let i = 0; i < need; i++) this.core();
+		},
+
+		topUp() {
+			if (this.ansQueqe.length + this.fetching < BUFFER_LOW) this.fill();
+		},
+
+		addToTower(c) {
+			if (c) this.tower.unshift(c.zh);
+		},
+
+		next() {
+			if (!this.currentCard) {
+				this.loading = this.indexM.length > 0;
+				this.fill();
+				return;
+			}
+			if (this.showBoth) {
+				this.addToTower(this.currentCard);
+				this.ansQueqe.shift();
+				this.faceNow = 0;
+			} else {
+				// 雙面卡：先翻面，再換下一張
+				if (this.faceNow === 0) {
+					this.faceNow = 1;
+				} else {
+					this.addToTower(this.currentCard);
+					this.ansQueqe.shift();
+					this.faceNow = 0;
+				}
+			}
+			this.topUp();
+		},
+
+		resetQueue() {
+			this.ansQueqe = [];
+			this.faceNow = 0;
+			this.loading = true;
+		},
+
+		loadLibrary() {
+			this.resetQueue();
+			if (this.selectedLib === 'custom') {
+				this.loadCustom();
+			} else if (this.selectedLib === 'all') {
+				fetch(INDEX_URL).then(r => r.json()).then(x => { this.indexM = x; this.fill(); });
+			} else {
+				this.indexM = example[this.selectedLib];
+				this.fill();
+			}
+		},
+
+		loadCustom() {
+			if (this.selectedLib !== 'custom') { this.selectedLib = 'custom'; }
+			this.resetQueue();
+			let src = this.customSrc.trim();
+			if (!src) { this.indexM = []; this.loading = false; return; }
+
+			// json 字庫網址：抓回來當字庫
+			if (/^https?:\/\//i.test(src) || /\.json($|[?#])/i.test(src)) {
+				fetch(src)
+					.then(r => r.json())
+					.then(x => { this.indexM = x; this.fill(); })
+					.catch(() => { this.loading = false; });
+				return;
+			}
+
+			// 否則視為字列：可有可無的外層中括號，逗號／頓號／空白皆可分隔
+			src = src.replace(/^\[/, '').replace(/\]$/, '');
+			this.indexM = src.split(/[,，、\s]+/).map(s => s.trim()).filter(Boolean);
+			if (this.indexM.length) this.fill();
+			else this.loading = false;
+		},
+
+		useTowerAsLib() {
+			if (this.tower.length <= 1) return;
+			const words = this.tower.slice();   // 已收集的字（最新在前）
+			this.customSrc = '[' + words.join(', ') + ']';
+			this.selectedLib = 'custom';
+			this.indexM = words;
+			this.resetQueue();
+			this.fill();
+		},
+
+		onKey(e) {
+			if (e.key === 'Enter' || e.key === 'ArrowRight') {
+				e.preventDefault();
+				this.next();
 			}
 		}
-	}
+	},
 
-	function core (obj) {
+	mounted() {
+		window.addEventListener('keydown', this.onKey);
 
-		if (!indexM) {console.log('索引尚未讀取'); return};
-
-		var newSrc = $("#source").val();
-		var wordNow = pickone(indexM); //indexCore
-		var wordNowD = decodeURIComponent(wordNow.replace(/\+/g,  " ")); // 國字
-
-		console.log(wordNowD);
-        
-        $.getJSON("https://www.moedict.tw/a/"+wordNowD+".json", function(x){
-        	var enWord, zhPrononce; // 英文, 注音
-        	zhPrononce = x.h[0].b;
-
-        	try {
-        		enWord = x.translation.English[0];
-        		if (enWord.substr(0,8) == 'same as `'){
-        			console.log("發現"+enWord+"重新取得英文翻譯")
-        			var nextWord = decodeURIComponent(enWord.split('same as `')[1].split('~')[0].replace(/\+/g,  " "));
-        			enWord = $.getJSON("https://www.moedict.tw/a/"+nextWord+".json", function(x) {return x.translation.English[0]});
-        		}
-        		if (enWord.substr(0,8) == 'same as `'){
-        			console.log("發現"+enWord+"重新取得英文翻譯")
-        			var nextWord = decodeURIComponent(enWord.split('same as `')[1].split('~')[0].replace(/\+/g,  " "));
-        			enWord = $.getJSON("https://www.moedict.tw/a/"+nextWord+".json", function(x) {return x.translation.English[0]});
-        		}
-
-        		console.log(enWord);
-			    ansQueqe.push({"zh":wordNowD, "en":enWord});
-        	}
-	        catch (err) {
-	        	console.log(err+"____條目「"+wordNowD+"」暫無英文翻譯");
-				core(obj); 	// 條目無英文對照就換一張
-	        }        			        	
-	    });
-
-	}
-
-
-	function showAndCore (obj) {   // 預先讀好下次要顯示的資料，使用者按鍵時就不用等
-
-		innerBig();	faceNow++;
-
-		if (card != "雙面" || faceNow == 2) {
-			core(obj);core(obj);
-			if (faceNow == 2) {toTower(ansQueqe[0]); ansQueqe.shift()}
-			faceNow = 0;
+		const hash = location.hash.slice(1);
+		if (hash) {                             // 支援用網址 hash 帶入自訂字庫
+			let decoded;
+			try { decoded = decodeURIComponent(hash); } catch (e) { decoded = hash; }
+			this.customSrc = decoded;
+			this.selectedLib = 'custom';
+			this.loadCustom();
+		} else {
+			this.loadLibrary();
 		}
+	},
+
+	beforeUnmount() {
+		window.removeEventListener('keydown', this.onKey);
 	}
-
-	// goal: 使用者可設定: 「是否加注音?」「存下顯示過的成為字庫」
-
-	function runCode(e) {
-
-		var keycode; 
-		if (window.event) keycode = window.event.keyCode;
-		else if (e) keycode = e.which;
-		if (keycode == 13) {  // 32:Spacebar  13:ENTER
-			bottonFunNow(objNow);
-		}
-	}
-
-	function doSwi(obj, doCard, doFaceBack, word, doStart, doInner){
-		if (confirm(word)) {
-			if (doCard) card = doCard;
-			if (doFaceBack) faceBack = doFaceBack;
-			start = doStart;
-			if (doInner) obj.innerHTML = doInner;
-		}
-	}
-
-	function swiByName (obj, name) {
-		core();
-		switch (name)
-		{
-			case "雙面" : 
-				doSwi(obj, "單面",'', "換成單面卡?", 0, "單面"); break;
-			case "單面" : 
-				doSwi(obj, "雙面",'', "換成雙面卡?", 0, "雙面"); break;	
-			case "漢英" : 
-				doSwi(obj, '', "英漢", "改為英漢對照?", 0, "英漢");
-//				ansQueqe = []; core();
-				break;
-			case "英漢" : 
-				doSwi(obj, '', "漢英", "改為漢英對照?", 0, "漢英");	
-//				ansQueqe = []; core();
-				break
-			case "自訂字庫" :
-				var newSrc = $("#source").val();
-
-				if (newSrc.substr(0,1) == '[') {
-
-					console.log('[\'' + newSrc.substr(1,newSrc.length - 2).split(/,\s*/).join('\',\'') + '\']');
-		
-					indexM = eval('[\'' + newSrc.substr(1,newSrc.length - 2).split(/,\s*/).join('\',\'') + '\']');
-					}
-
-				if (newSrc.substr(newSrc.length-4,4) == 'json') {
-                                $.getJSON(newSrc, function(x) {indexM = x});
-				}
-				ansQueqe = []; core(); core();
-				break;		
-			default : 
-				alert("發生錯誤");
-		};			
-	}
-
-	function swi(obj) {
-		var data = obj.innerHTML;
-		swiByName (obj, data);
-	}
-
-	function chIndex(list) {
-		$("#source").val('['+list.join()+']');
-		indexM = list;
-		ansQueqe = []; core();
-	}
-
-	//目標：桌電 ==> Enter連閃, 按字查詢		手機&平板 ==> 右滑連閃, 按字查詢
-
-
-</script>
-
-<div style="float:right; width:20%;">
-	<p>範例字庫</p>
-	<button onclick="chIndex(example.body)">身體字庫</button>
-	<button onclick="chIndex(example.relation)">關係字庫</button>
-	<button onclick="chIndex(example.home)">居家字庫</button>
-	<button onclick="chIndex(example.food)">食物字庫</button>
-	<button onclick="chIndex(example.chemistry)">化學字庫</button>
-	<button onclick="chIndex(example.math)">數學字庫</button>
-</div>
-
-
-<button class="ui pink large button" onclick="swi(this)">單面</button>
-<button class="ui pink large button" onclick="swi(this)">漢英</button>
-
-<!-- https://www.moedict.tw/a/index.json-->
-<textarea id = "source" rows = "2" cols = "60" onchange="swiByName(this,'自訂字庫')">https://www.moedict.org/a/index.json</textarea>
-
-<button class="ui pink large button" onclick="swi(this)">自訂字庫</button>
-<p align="center">
-歡迎您參考範例的格式，自訂字庫，開一個文字檔，諸存累積
-</p>
-
-
-<div class="ui message blue" style="height: 50ex;">
-	<big id = "bigans" style="font-size: 400%; margin-left:20px;">
-	
-	<div>歡迎使用活潑的萌典閃卡！<br/>請按Enter鍵開始。<br />手機橫放畫面較佳。</div>
-	</big>
-</div>
-<br />
-<div id="tower">[萌]</div>
-<div>
-	<button onclick="{
-	location = 'moecard.html#'+ $('#tower').html().split(/\s/).join('');
-	location.reload();
-	}">用這些字當字庫</button>
-</div>
-
-<script type="text/javascript">
-	if (!location.hash){
-		// https://www.moedict.tw/a/index.json
-		$.getJSON("https://www.moedict.org/a/index.json", function(x) {
-			indexM = x;	core();core();core();
-		});
-	}
-	else {
-		$('#source').val(location.hash.split('#')[1]);
-		swiByName(document.getElementById('source'),'自訂字庫');
-	}
-
-	bottonFunNow = showAndCore;
-	document.onkeydown = runCode;
-	core(); core(); 
-
+}).mount('#app');
 </script>
 
 </body>
+</html>
