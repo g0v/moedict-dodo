@@ -15,10 +15,10 @@
 </head><body>
 <div id="top" style="font-family: 'Fira Mono OT', monospace; position: absolute; top: -90px; text-align: right">Score: <span id="score">0</span></div>
 
-<div style="display: inline-block; float:right; width: 30%">
+<div id="cardlink" style="display: inline-block; float:right; width: 30%">
     <div id="tower">[萌]</div>
     <div>
-        <button onclick="{location = 'moecard.html#'+ $('#tower').html().split(/\s/).join('')}">以這些字去玩閃卡</button>
+        <button class="ui teal small button" style="margin-top: 4px; box-shadow: 0 1px 3px rgba(0,0,0,.2)" onclick="{location = 'moecard.html#'+ $('#tower').html().split(/\s/).join('')}"><i class="icon clone"></i>以這些字去玩閃卡</button>
     </div>
 </div>
 
@@ -78,6 +78,13 @@
     .char i.time, .item i.time { color: #666 }
     #wrap { font-size: 22px; font-weight: normal; width: 100%; height: 100% }
     #wrap, big { font-family: "Lantinghei TC", "黑體-繁", "微軟正黑體", "儷黑 Pro", "蘋果儷中黑", "Adobe 繁黑體 Std", "cwTex 明體", "Adobe 明體 Std", "PMingLiU", "MingLiU", sans-serif, "HanaMinA", "HanaMinB", "HAN NOM A", "HAN NOM B" }
+    /* 把「玩閃卡」block 固定在右下方，避免被遊戲板壓到 */
+    #cardlink {
+        position: fixed !important; right: 5px !important; bottom: 5px !important;
+        top: auto !important; left: auto !important;
+        float: none !important; width: auto !important; max-width: 40%;
+        z-index: 100; text-align: right;
+    }
 </style>
 <!--
 // access key
